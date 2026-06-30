@@ -3,32 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mac Terminal Trainer — zsh</title>
+  <title>Raspberry Pi 5 Terminal Trainer</title>
   <style>
     :root {
-      --bg: #1e1e1e;
-      --panel: #2d2d2d;
-      --border: #3d3d3d;
-      --text: #f5f5f7;
-      --muted: #98989d;
-      --green: #30d158;
-      --cyan: #64d2ff;
-      --yellow: #ffd60a;
-      --orange: #ff9f0a;
-      --blue: #0a84ff;
-      --purple: #bf5af2;
-      --red: #ff453a;
-      --prompt: #30d158;
-      --font: "SF Mono", "Menlo", "Monaco", "Consolas", monospace;
+      --bg: #1a1218;
+      --panel: #261c24;
+      --border: #3d2f38;
+      --text: #f5eef2;
+      --muted: #a8949e;
+      --green: #3dd68c;
+      --cyan: #5ecfff;
+      --yellow: #ffd166;
+      --orange: #ff8c42;
+      --raspberry: #e30b5d;
+      --blue: #6b9fff;
+      --purple: #c77dff;
+      --red: #ff6b6b;
+      --prompt: #3dd68c;
+      --font: "SF Mono", "Menlo", "DejaVu Sans Mono", monospace;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0; min-height: 100vh;
-      background: radial-gradient(1000px 500px at 80% -5%, #1a2a3a 0%, var(--bg) 50%);
+      background: radial-gradient(900px 500px at 85% -5%, #3d1028 0%, var(--bg) 55%);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
     }
-    .wrap { max-width: 1140px; margin: 0 auto; padding: 20px; }
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 20px; }
     .top-nav {
       display: flex; gap: 10px; align-items: center; margin-bottom: 16px;
       padding-bottom: 12px; border-bottom: 1px solid var(--border); flex-wrap: wrap;
@@ -37,14 +38,14 @@
       color: var(--muted); text-decoration: none; font-size: 0.88rem;
       padding: 6px 12px; border-radius: 8px; border: 1px solid transparent;
     }
-    .top-nav a:hover { color: var(--text); background: #3a3a3c; }
-    .top-nav a.active { color: var(--cyan); border-color: var(--cyan); background: rgba(100,210,255,0.08); }
+    .top-nav a:hover { color: var(--text); background: #352830; }
+    .top-nav a.active { color: var(--raspberry); border-color: var(--raspberry); background: rgba(227,11,93,0.1); }
     header { margin-bottom: 16px; }
     header h1 { font-size: 1.3rem; margin: 0 0 6px; font-weight: 600; }
+    header h1 span { color: var(--raspberry); }
     header p { margin: 0; color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
-    header a { color: var(--cyan); }
-    .layout { display: grid; grid-template-columns: 290px 1fr; gap: 14px; }
-    @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } .sidebar { order: 2; } }
+    .layout { display: grid; grid-template-columns: 300px 1fr; gap: 14px; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .sidebar { order: 2; } }
     .sidebar, .terminal-wrap {
       background: var(--panel); border: 1px solid var(--border);
       border-radius: 12px; overflow: hidden;
@@ -54,127 +55,125 @@
       font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em;
       color: var(--muted); margin: 0 0 10px;
     }
-    .cmd-list { list-style: none; padding: 0; margin: 0 0 16px; max-height: 280px; overflow-y: auto; }
+    .cmd-list { list-style: none; padding: 0; margin: 0 0 16px; max-height: 240px; overflow-y: auto; }
     .cmd-list li {
       padding: 5px 8px; border-radius: 6px; cursor: pointer;
-      font-family: var(--font); font-size: 0.76rem;
+      font-family: var(--font); font-size: 0.74rem;
     }
-    .cmd-list li:hover { background: #3a3a3c; }
+    .cmd-list li:hover { background: #352830; }
     .cmd-list li.done { color: var(--green); }
     .cmd-list li.done::after { content: " ✓"; }
     .cmd-list code { color: var(--cyan); word-break: break-all; }
-    .progress { height: 6px; background: #3a3a3c; border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
+    .progress { height: 6px; background: #352830; border-radius: 99px; overflow: hidden; margin-bottom: 6px; }
     .progress > div {
       height: 100%;
-      background: linear-gradient(90deg, var(--cyan), var(--blue));
+      background: linear-gradient(90deg, var(--raspberry), var(--orange));
       width: 0%; transition: width 0.3s;
     }
     .stats { color: var(--muted); font-size: 0.78rem; }
     .hint-box {
-      background: #3a3a3c; border-radius: 8px; padding: 10px;
-      color: var(--muted); line-height: 1.45; font-size: 0.78rem;
+      background: #352830; border-radius: 8px; padding: 10px;
+      color: var(--muted); line-height: 1.45; font-size: 0.76rem;
     }
     .module-badge {
-      display: inline-block; background: #3a3a3c; border: 1px solid var(--border);
-      border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; margin-bottom: 12px;
-      color: var(--cyan);
+      display: inline-block; background: #352830; border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 12px;
+      color: var(--raspberry);
     }
-    .module-nav { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; max-height: 200px; overflow-y: auto; }
-    .module-nav .btn { text-align: left; font-size: 0.74rem; padding: 6px 8px; }
+    .module-nav { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; max-height: 180px; overflow-y: auto; }
+    .module-nav .btn { text-align: left; font-size: 0.72rem; padding: 5px 8px; }
     .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .btn {
-      background: #3a3a3c; border: 1px solid var(--border); color: var(--text);
+      background: #352830; border: 1px solid var(--border); color: var(--text);
       padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
     }
-    .btn:hover { background: #48484a; }
-    .btn-primary { border-color: var(--cyan); color: var(--cyan); }
+    .btn:hover { background: #42343c; }
+    .btn-primary { border-color: var(--raspberry); color: var(--raspberry); }
     .btn-test { border-color: var(--yellow); color: var(--yellow); }
-    .btn-test.active { background: rgba(255,214,10,0.15); }
+    .btn-test.active { background: rgba(255,209,102,0.12); }
     .term-bar {
       display: flex; align-items: center; gap: 10px;
-      padding: 10px 14px; background: #252525; border-bottom: 1px solid var(--border);
+      padding: 10px 14px; background: #1f161c; border-bottom: 1px solid var(--border);
     }
     .dots { display: flex; gap: 6px; }
     .dots span { width: 12px; height: 12px; border-radius: 50%; }
     .dots span:nth-child(1) { background: #ff5f57; }
     .dots span:nth-child(2) { background: #febc2e; }
     .dots span:nth-child(3) { background: #28c840; }
-    .term-title { flex: 1; text-align: center; font-size: 0.78rem; color: var(--muted); font-family: var(--font); }
-    .output { min-height: 380px; max-height: 55vh; overflow-y: auto; padding: 14px; font-family: var(--font); font-size: 0.82rem; line-height: 1.55; }
+    .term-title { flex: 1; text-align: center; font-size: 0.76rem; color: var(--muted); font-family: var(--font); }
+    .output { min-height: 400px; max-height: 58vh; overflow-y: auto; padding: 14px; font-family: var(--font); font-size: 0.81rem; line-height: 1.55; }
     .output-status { color: var(--muted); font-size: 0.72rem; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
     .input-row {
       display: flex; align-items: center; gap: 8px;
-      padding: 10px 14px; border-top: 1px solid var(--border); background: #252525;
+      padding: 10px 14px; border-top: 1px solid var(--border); background: #1f161c;
     }
-    .prompt-label { color: var(--prompt); font-family: var(--font); font-size: 0.82rem; white-space: nowrap; }
+    .prompt-label { color: var(--prompt); font-family: var(--font); font-size: 0.8rem; white-space: nowrap; }
     #cmdInput {
       flex: 1; background: transparent; border: none; outline: none;
-      color: var(--text); font-family: var(--font); font-size: 0.82rem;
+      color: var(--text); font-family: var(--font); font-size: 0.81rem;
     }
     .line-user { color: var(--text); margin-bottom: 4px; }
-    .line-sys { color: var(--muted); }
     .line-ok { color: var(--green); }
     .line-err { color: var(--red); }
     .line-warn { color: var(--yellow); }
     .line-hl { color: var(--cyan); }
     .line-cmd { color: var(--orange); }
     .line-muted { color: var(--muted); }
-    .line-uk-hint { color: #e6c87a; font-size: 0.78rem; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #48484a; }
-    .result-box { background: #252525; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+    .line-uk-hint { color: #e6c87a; font-size: 0.77rem; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #42343c; }
+    .result-box { background: #1f161c; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
     .result-box.warn { border-color: var(--yellow); }
     .result-box.purple { border-color: var(--purple); }
     .result-box.danger { border-color: var(--red); }
     .result-title { font-weight: 600; margin-bottom: 6px; color: var(--cyan); }
     .result-box.danger .result-title { color: var(--red); }
     .modal-backdrop {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
       z-index: 100; align-items: center; justify-content: center; padding: 20px;
     }
     .modal-backdrop.open { display: flex; }
     .modal {
       background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
-      padding: 20px; max-width: 520px; width: 100%; max-height: 80vh; overflow-y: auto;
+      padding: 20px; max-width: 540px; width: 100%; max-height: 80vh; overflow-y: auto;
     }
     .modal h3 { margin: 0 0 14px; font-size: 1rem; }
     .scenario-item {
       padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
       margin-bottom: 8px; cursor: pointer;
     }
-    .scenario-item:hover, .scenario-item.selected { border-color: var(--cyan); background: #353535; }
+    .scenario-item:hover, .scenario-item.selected { border-color: var(--raspberry); background: #352830; }
     .scenario-item small { color: var(--muted); display: block; margin-top: 4px; }
-    kbd { background: #3a3a3c; border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.8em; }
+    kbd { background: #352830; border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 0.8em; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <nav class="top-nav">
-      <a href="index.html" class="active">Тренажер Terminal</a>
-      <a href="course.html">Уроки (Markdown)</a>
+      <a href="index.html" class="active">Тренажер Pi</a>
+      <a href="course.html">Уроки (14)</a>
       <a href="cheatsheet.html">Шпаргалка</a>
     </nav>
     <header>
-      <h1>Mac Terminal Trainer</h1>
+      <h1><span>Raspberry Pi 5</span> Terminal Trainer</h1>
       <p>
-        Практичний тренажер команд macOS Terminal (<code>zsh</code>) — файли, мережа, SSH/MikroTik,
-        Git/GitHub, Python/Node/Homebrew, AI CLI. Емуляція без реального виконання.
+        Практичний тренажер Linux-команд для Pi 5: SSH, apt, мережа, GPIO, systemd, Git.
+        Емуляція bash на Pi (підключення з Mac через SSH). Без реального виконання.
         <kbd>↑</kbd>/<kbd>↓</kbd> — історія, <kbd>Tab</kbd> — автодоповнення.
       </p>
     </header>
 
     <div class="layout">
       <aside class="sidebar">
-        <div class="module-badge" id="moduleBadge">Terminal basics</div>
+        <div class="module-badge" id="moduleBadge">1. SSH</div>
         <h2>Прогрес розділу</h2>
         <div class="progress"><div id="progressBar"></div></div>
         <div class="stats" id="progressText">0 / 0</div>
-        <h2>Розділи курсу</h2>
+        <h2>Розділи (14)</h2>
         <div class="module-nav" id="moduleNav"></div>
         <h2>Команди розділу</h2>
         <ul class="cmd-list" id="cmdChecklist"></ul>
         <div class="hint-box">
           <strong>Завдання:</strong> виконай усі команди розділу.<br><br>
-          <strong>Сценарії:</strong> «Обрати сценарій»<br>
-          <strong>Тест:</strong> питання з підказок
+          Користувач: <code>stanislav</code> · IP: <code>10.0.0.50</code>
         </div>
         <div class="actions">
           <button class="btn btn-test" id="btnTest" type="button">Режим тестування</button>
@@ -186,15 +185,15 @@
       <section class="terminal-wrap">
         <div class="term-bar">
           <div class="dots"><span></span><span></span><span></span></div>
-          <div class="term-title" id="termTitle">Stas@MacBook-Pro — zsh — ~/Projects/demo</div>
+          <div class="term-title" id="termTitle">stanislav@raspberrypi — bash — /home/stanislav</div>
         </div>
         <div class="output" aria-live="polite">
-          <div class="output-status" id="outputStatus">% · Mac Terminal емулятор (zsh)</div>
+          <div class="output-status" id="outputStatus">$ · Raspberry Pi 5 емулятор (bash)</div>
           <div class="live-panel" id="livePanel"></div>
         </div>
         <form class="input-row" id="cmdForm" autocomplete="off">
-          <span class="prompt-label" id="promptLabel">Stas@MacBook-Pro demo %</span>
-          <input id="cmdInput" type="text" spellcheck="false" placeholder="pwd, ls, git status, ping …" autofocus />
+          <span class="prompt-label" id="promptLabel">stanislav@raspberrypi:~$</span>
+          <input id="cmdInput" type="text" spellcheck="false" placeholder="ssh, pwd, sudo apt update, pinout …" autofocus />
         </form>
       </section>
     </div>

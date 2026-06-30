@@ -1,8 +1,8 @@
-# Mac Terminal Course — CLI Tutorial
+# Raspberry Pi 5 Terminal Course
 
-Практичний курс команд macOS Terminal (`zsh`) українською: файли, мережа, SSH/MikroTik, Git/GitHub, Python/Node/Homebrew, AI CLI.
+Практичний курс Linux-команд для **Raspberry Pi 5** українською: SSH з Mac, файли, apt, мережа, GPIO, systemd, Python, Git.
 
-**Головна мета — не вивчити всі команди, а навчитися швидко знаходити потрібну команду, розуміти її ризик і застосовувати її в реальному сценарії.**
+**Головна мета — не вивчити всі команди Linux, а навчитися швидко знаходити потрібну команду, розуміти її ризик і застосовувати її в реальному сценарії на Raspberry Pi.**
 
 ## Швидкий старт
 
@@ -10,33 +10,37 @@
 open index.html
 ```
 
-Або GitHub Pages: **https://stszu.github.io/mac-terminal-course/**
+GitHub Pages: **https://stszu.github.io/raspberry-pi-terminal-course/**
 
-## Що всередині
+## Сторінки
 
-| Файл | Опис |
-|------|------|
-| [index.html](index.html) | Інтерактивний тренажер Terminal (емуляція zsh, 10 модулів) |
-| [course.html](course.html) | Уроки курсу (Markdown у браузері) |
+| Сторінка | Опис |
+|----------|------|
+| [index.html](index.html) | Інтерактивний тренажер (14 модулів, bash на Pi) |
+| [course.html](course.html) | 14 уроків у Markdown |
 | [cheatsheet.html](cheatsheet.html) | Шпаргалка команд |
-| [mac-terminal-course/](mac-terminal-course/) | Повний курс у Markdown (10 уроків + план на 14 днів) |
+| [raspberry-pi-terminal-course/](raspberry-pi-terminal-course/) | Повний курс у Markdown |
 
 ## Модулі тренажера
 
-1. Terminal basics — shell, PATH, `man`, `apropos`
-2. Файли та папки — `ls`, `cd`, `open .`, `rm -rf` (ризики)
-3. Пошук і текст — `find`, `grep`, `pbcopy`/`pbpaste`
-4. Мережева діагностика — `ping`, `ifconfig`, `dig`, `curl`
-5. SSH та MikroTik — `ssh`, `scp`, pre-check список
-6. Git та GitHub — `git`, `gh`
-7. Python, Node, Homebrew — `python3`, `npm`, `brew`
-8. AI CLI агенти — `claude`, `codex`, `gemini`, `grok`
-9. Небезпечні команди — `sudo`, `curl | bash`
-10. Щоденна практика — закріплення
+1. SSH і перший вхід
+2. Terminal basics
+3. Файли та папки (nano, rm -rf)
+4. Пакети apt
+5. Мережева діагностика
+6. Стан системи (vcgencmd, RAM, диск)
+7. Python на Pi (venv)
+8. GPIO та залізо
+9. systemd services
+10. Логи та діагностика
+11. Git workflow
+12. Передача файлів Mac→Pi (scp, rsync)
+13. Небезпечні команди
+14. 14-денний план практики
 
 ## Для кого
 
-Mac з `/bin/zsh`, Git/GitHub, Python, Node, Homebrew, SSH до MikroTik, AI CLI.
+Mac + Raspberry Pi 5: домашня автоматизація, GPIO, file server, Python, GitHub, SSH.
 
 ## Ліцензія
 

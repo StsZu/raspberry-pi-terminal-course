@@ -1,212 +1,235 @@
+const GOAL_PHRASE = "Головна мета — не вивчити всі команди Linux, а навчитися швидко знаходити потрібну команду, розуміти її ризик і застосовувати її в реальному сценарії на Raspberry Pi.";
+
 const UK_HINTS = {
-  "echo $SHELL": "Показує шлях до поточної оболонки — у вас /bin/zsh.",
-  "whoami": "Виводить ім'я поточного користувача macOS.",
-  "hostname": "Ім'я комп'ютера в мережі (напр. MacBook-Pro).",
-  "pwd": "Де ви зараз у файловій системі (print working directory).",
+  "ping raspberrypi.local": "Перевіряє, чи Pi доступна в локальній мережі (mDNS).",
+  "ping 10.0.0.50": "Пінг за IP — якщо .local не працює.",
+  "ssh stanislav@raspberrypi.local": "SSH з Mac до Pi через hostname (mDNS).",
+  "ssh stanislav@10.0.0.50": "SSH за IP-адресою Raspberry Pi.",
+  "hostname": "Ім'я Pi в мережі (зазвичай raspberrypi).",
+  "whoami": "Поточний користувач Linux на Pi.",
+  "pwd": "Поточна директорія (print working directory).",
+  "exit": "Вихід з SSH-сесії — повернення на Mac.",
+  "echo $SHELL": "Шлях до shell — на Pi зазвичай /bin/bash.",
   "clear": "Очищує екран терміналу.",
-  "history": "Список останніх команд цієї сесії.",
-  "which git": "Показує повний шлях до виконуваного файлу команди.",
-  "command -v python3": "Альтернатива which — перевіряє наявність команди в $PATH.",
-  "echo $PATH": "Список папок, де shell шукає програми.",
-  "echo $PATH | tr ':' '\\n'": "PATH по одному шляху на рядок — зручно читати.",
-  "man ls": "Відкриває довідку (manual) для команди ls.",
-  "apropos network": "Шукає команди за ключовим словом у описах.",
-  "ls": "Список файлів і папок у поточній директорії.",
-  "ls -la": "Детальний список: права, розмір, дата, приховані файли.",
-  "cd": "Перехід у папку. cd ~ — додому, cd .. — на рівень вище.",
-  "cd ..": "На одну папку вище в дереві каталогів.",
-  "cd ~": "Перехід у домашню папку (/Users/username).",
-  "open .": "Відкриває поточну папку у Finder (тільки macOS).",
-  "mkdir projects": "Створює нову папку projects.",
-  "touch readme.md": "Створює порожній файл або оновлює час модифікації.",
+  "history": "Історія команд поточної сесії.",
+  "which python3": "Де знаходиться python3 у $PATH.",
+  "command -v git": "Перевірка наявності git без запуску.",
+  "echo $PATH": "Список папок пошуку програм.",
+  "echo $PATH | tr ':' '\\n'": "PATH — по одному шляху на рядок.",
+  "man ls": "Довідка (manual) для команди ls.",
+  "apropos network": "Пошук команд за ключовим словом.",
+  "ls": "Список файлів у поточній папці.",
+  "ls -la": "Детальний список з прихованими файлами.",
+  "cd ~/projects": "Перехід у папку projects у домашній директорії.",
+  "cd ..": "На рівень вище в дереві каталогів.",
+  "cd ~": "Додому — /home/stanislav.",
+  "mkdir led-test": "Створює папку для проєкту.",
+  "touch main.py": "Створює порожній Python-файл.",
+  "nano main.py": "Редагує файл у текстовому редакторі nano.",
+  "cat main.py": "Виводить вміст файлу на екран.",
+  "less main.py": "Перегляд файлу з прокруткою (q — вихід).",
+  "head -5 main.py": "Перші 5 рядків файлу.",
+  "tail -5 main.py": "Останні 5 рядків.",
+  "tail -f log.txt": "Стежить за новими рядками логу.",
   "cp file.txt backup.txt": "Копіює файл.",
-  "mv old.txt new.txt": "Перейменовує або переміщує файл/папку.",
-  "rm file.txt": "Видаляє файл. Без кошика — незворотно!",
+  "mv old.txt new.txt": "Перейменовує або переміщує.",
+  "rm file.txt": "Видаляє файл. Без кошика!",
   "rm -r folder": "Рекурсивно видаляє папку з вмістом.",
   "rm -rf folder": "⚠ ВИСОКИЙ РИЗИК: примусове видалення без підтвердження.",
   "rmdir empty": "Видаляє лише порожню папку.",
-  "cat readme.md": "Виводить вміст файлу на екран.",
-  "less readme.md": "Перегляд файлу з прокруткою (q — вихід).",
-  "head -5 readme.md": "Перші 5 рядків файлу.",
-  "tail -5 readme.md": "Останні 5 рядків файлу.",
-  "tail -f log.txt": "Стежить за новими рядками логу в реальному часі.",
-  "find . -name \"*.md\"": "Шукає файли за іменем від поточної папки.",
-  "grep TODO readme.md": "Шукає текст у файлі.",
-  "grep -R \"TODO\" .": "Рекурсивний пошук тексту в усіх файлах.",
-  "wc -l file.txt": "Підраховує рядки, слова, байти.",
-  "sort file.txt": "Сортує рядки файлу.",
-  "uniq file.txt": "Прибирає сусідні дублікати рядків.",
-  "cut -d: -f1 /etc/passwd": "Вирізає поля з рядків за роздільником.",
-  "tr 'a-z' 'A-Z'": "Замінює символи (тут — у верхній регістр).",
-  "xargs": "Будує команди зі stdin — часто з find або grep.",
-  "mdfind \"readme\"": "Spotlight-пошук файлів за іменем/вмістом.",
-  "pbcopy": "Копіює stdin у буфер обміну macOS.",
-  "pbpaste": "Вставляє вміст буфера обміну в термінал/файл.",
-  "ping -c 3 8.8.8.8": "Перевіряє доступність хоста (3 пакети).",
-  "traceroute google.com": "Маршрут пакетів до хоста.",
-  "route get default": "Default gateway (маршрутизатор) на Mac.",
-  "ifconfig en0": "Мережеві інтерфейси та IP-адреси.",
-  "ipconfig getifaddr en0": "Лише IP Wi-Fi (en0) — швидко.",
-  "networksetup -listallhardwareports": "Список мережевих портів Mac.",
-  "networksetup -getinfo Wi-Fi": "Налаштування Wi-Fi: IP, router, DNS.",
-  "dig google.com": "DNS-запит через dig.",
-  "nslookup google.com": "DNS-запит (альтернатива dig).",
-  "curl -I https://google.com": "HTTP-заголовки відповіді (перевірка сайту).",
-  "netstat -an | grep LISTEN": "Відкриті порти, що слухають з'єднання.",
-  "lsof -i :22": "Хто використовує порт 22 (SSH).",
-  "ssh Stas@10.0.0.254": "SSH до MikroTik роутера за IP.",
-  "scp backup.rsc Stas@10.0.0.254:": "Копіює файл на віддалений сервер через SSH.",
-  "ssh-keygen -t ed25519": "Генерує SSH-ключ для безпарольного входу.",
-  "ssh-copy-id Stas@10.0.0.254": "Копіює публічний ключ на сервер.",
-  "git status": "Стан репозиторію: змінені, staged файли.",
-  "git add .": "Додає всі зміни в staging area.",
-  "git commit -m \"message\"": "Фіксує staged-зміни в коміт.",
-  "git push": "Відправляє коміти на GitHub.",
-  "git pull": "Завантажує зміни з віддаленого репозиторію.",
+  "sudo apt update": "Оновлює список пакетів з репозиторіїв.",
+  "sudo apt upgrade": "Встановлює оновлення встановлених пакетів.",
+  "sudo apt install git": "Встановлює пакет git.",
+  "sudo apt install python3-pip": "Встановлює pip для Python 3.",
+  "apt search gpio": "Шукає пакети за ключовим словом.",
+  "apt show git": "Детальна інформація про пакет.",
+  "apt list --installed": "Список встановлених пакетів.",
+  "hostname -I": "IP-адреси Pi (швидко).",
+  "ip addr": "Мережеві інтерфейси та IP.",
+  "ip route": "Таблиця маршрутизації, default gateway.",
+  "ping 8.8.8.8": "Перевірка доступу до інтернету (DNS-free).",
+  "ping google.com": "Перевірка DNS + інтернет.",
+  "curl https://example.com": "HTTP-запит — перевірка з'єднання.",
+  "ss -tulpn": "Відкриті порти, що слухають.",
+  "rfkill list": "Статус Wi-Fi/Bluetooth (чи заблоковано).",
+  "uname -a": "Версія ядра Linux та архітектура.",
+  "cat /etc/os-release": "Дистрибутив (Raspberry Pi OS / Debian).",
+  "uptime": "Час роботи системи та load average.",
+  "vcgencmd measure_temp": "Температура CPU Pi — ключова діагностика!",
+  "vcgencmd get_throttled": "Проблеми живлення/перегріву (throttling flags).",
+  "free -h": "Використання RAM (людсько-читабельно).",
+  "df -h": "Вільне місце на дисках.",
+  "du -sh ~/projects": "Розмір папки projects.",
+  "ps aux | grep python": "Процеси Python у системі.",
+  "top": "Інтерактивний монітор процесів (q — вихід).",
+  "python3 --version": "Версія Python 3 на Pi.",
+  "python3 -m venv .venv": "Створює virtual environment.",
+  "source .venv/bin/activate": "Активує venv (prompt зміниться).",
+  "pip3 install requests": "Встановлює Python-пакет у venv.",
+  "python3 main.py": "Запуск Python-скрипту.",
+  "deactivate": "Вихід з virtual environment.",
+  "pinout": "Схема GPIO-контактів Raspberry Pi.",
+  "gpiodetect": "Список GPIO chips на платі.",
+  "gpioinfo": "Детальна інформація про GPIO lines.",
+  "ls /dev/gpiochip*": "Пристрої GPIO у /dev.",
+  "systemctl status my-service": "Статус systemd service.",
+  "sudo systemctl start my-service": "Запускає service.",
+  "sudo systemctl enable my-service": "Автозапуск service при boot.",
+  "journalctl -u my-service -f": "Логи service в реальному часі.",
+  "journalctl -xe": "Останні системні помилки (розширено).",
+  "dmesg | tail -50": "Останні повідомлення ядра.",
+  "git status": "Стан Git-репозиторію.",
+  "git clone https://github.com/user/project.git": "Клонує проєкт на Pi.",
+  "git pull": "Підтягує зміни з GitHub.",
   "git log --oneline": "Компактна історія комітів.",
-  "git branch": "Список локальних гілок.",
-  "git switch feature": "Перемикається на гілку (сучасна альтернатива checkout).",
-  "git diff": "Незакомічені зміни у файлах.",
-  "git restore file.txt": "Скасовує незакомічені зміни у файлі.",
-  "gh auth status": "Статус авторизації GitHub CLI.",
-  "gh repo view": "Інформація про поточний GitHub-репозиторій.",
-  "python3 --version": "Версія Python 3.",
-  "pip3 list": "Встановлені Python-пакети.",
-  "node --version": "Версія Node.js.",
-  "npm run dev": "Запуск dev-скрипту з package.json.",
-  "npx create-next-app": "Запуск пакету без глобальної установки.",
-  "brew --version": "Версія Homebrew.",
-  "brew list": "Встановлені пакети Homebrew.",
-  "brew search wget": "Пошук пакету в Homebrew.",
-  "brew install wget": "Встановлює утиліту через Homebrew.",
-  "which claude": "Шлях до Claude CLI (чи встановлено).",
-  "which codex": "Шлях до Codex CLI.",
-  "which gemini": "Шлях до Gemini CLI.",
-  "which grok": "Шлях до Grok CLI.",
-  "claude": "Запуск Claude Code CLI в папці проєкту.",
-  "codex": "Запуск OpenAI Codex CLI.",
-  "gemini": "Запуск Google Gemini CLI.",
-  "grok": "Запуск xAI Grok CLI.",
-  "sudo": "⚠ Виконує команду з правами root — обережно!",
-  "diskutil list": "Список дисків і розділів macOS.",
-  "kill 1234": "Завершує процес за PID.",
+  "scp main.py stanislav@raspberrypi.local:/home/stanislav/projects/": "Копіює файл з Mac на Pi.",
+  "rsync -av ./project/ stanislav@raspberrypi.local:/home/stanislav/projects/project/": "Синхронізація папки Mac→Pi.",
+  "sudo reboot": "Перезавантаження Pi — завершить SSH-сесію!",
+  "sudo shutdown -h now": "Безпечне вимкнення Pi.",
   "curl -fsSL URL | bash": "⚠ Завантажує і одразу виконує скрипт з інтернету!"
 };
 
 const MODULES = {
+  ssh: {
+    id: "ssh", title: "1. SSH і перший вхід",
+    intro: "Підключення з Mac до Raspberry Pi 5 через SSH.",
+    commands: [
+      "ping raspberrypi.local", "ping 10.0.0.50",
+      "ssh stanislav@raspberrypi.local", "ssh stanislav@10.0.0.50",
+      "hostname", "whoami", "pwd", "exit"
+    ]
+  },
   basics: {
-    id: "basics", title: "1. Terminal basics",
-    intro: "Де я, хто я, shell, PATH, довідка — фундамент перед усім іншим.",
+    id: "basics", title: "2. Terminal basics",
+    intro: "Shell, PATH, довідка — основа Linux на Pi.",
     commands: [
       "echo $SHELL", "whoami", "hostname", "pwd", "clear", "history",
-      "which git", "command -v python3", "echo $PATH",
+      "which python3", "command -v git", "echo $PATH",
       "echo $PATH | tr ':' '\\n'", "man ls", "apropos network"
     ]
   },
   files: {
-    id: "files", title: "2. Файли та папки",
-    intro: "Навігація, створення, копіювання, видалення — щоденна робота в Terminal.",
+    id: "files", title: "3. Файли та папки",
+    intro: "Створення проєкту, nano, копіювання, видалення.",
     commands: [
-      "pwd", "ls", "ls -la", "cd", "cd ..", "cd ~", "open .",
-      "mkdir projects", "touch readme.md", "cp file.txt backup.txt",
-      "mv old.txt new.txt", "rm file.txt", "rm -r folder", "rm -rf folder",
-      "rmdir empty", "cat readme.md", "less readme.md",
-      "head -5 readme.md", "tail -5 readme.md", "tail -f log.txt"
+      "ls", "ls -la", "cd ~/projects", "cd ..", "cd ~",
+      "mkdir led-test", "touch main.py", "nano main.py", "cat main.py",
+      "less main.py", "head -5 main.py", "tail -5 main.py", "tail -f log.txt",
+      "cp file.txt backup.txt", "mv old.txt new.txt",
+      "rm file.txt", "rm -r folder", "rm -rf folder", "rmdir empty"
     ]
   },
-  search: {
-    id: "search", title: "3. Пошук і текст",
-    intro: "find, grep, Spotlight, буфер обміну — знаходимо потрібне швидко.",
+  packages: {
+    id: "packages", title: "4. Пакети та оновлення",
+    intro: "apt update/upgrade/install — управління пакетами Pi OS.",
     commands: [
-      "find . -name \"*.md\"", "grep TODO readme.md", "grep -R \"TODO\" .",
-      "wc -l file.txt", "sort file.txt", "uniq file.txt",
-      "cut -d: -f1 /etc/passwd", "tr 'a-z' 'A-Z'", "xargs",
-      "mdfind \"readme\"", "pbcopy", "pbpaste"
+      "sudo apt update", "sudo apt upgrade", "sudo apt install git",
+      "sudo apt install python3-pip", "apt search gpio", "apt show git",
+      "apt list --installed"
     ]
   },
   network: {
-    id: "network", title: "4. Мережева діагностика",
-    intro: "IP, gateway, DNS, ping — перевірка мережі перед SSH до MikroTik.",
+    id: "network", title: "5. Мережева діагностика",
+    intro: "IP, gateway, ping, порти, Wi-Fi на Pi.",
     commands: [
-      "ping -c 3 8.8.8.8", "traceroute google.com", "route get default",
-      "ifconfig en0", "ipconfig getifaddr en0",
-      "networksetup -listallhardwareports", "networksetup -getinfo Wi-Fi",
-      "dig google.com", "nslookup google.com", "curl -I https://google.com",
-      "netstat -an | grep LISTEN", "lsof -i :22"
+      "hostname -I", "ip addr", "ip route",
+      "ping 8.8.8.8", "ping google.com", "curl https://example.com",
+      "ss -tulpn", "rfkill list"
     ]
   },
-  ssh: {
-    id: "ssh", title: "5. SSH та MikroTik",
-    intro: "Підключення до роутера, копіювання backup, SSH-ключі.",
+  system: {
+    id: "system", title: "6. Стан системи",
+    intro: "Температура, RAM, диск, процеси — здоров'я Pi 5.",
     commands: [
-      "ping -c 3 10.0.0.254", "route get default", "networksetup -getinfo Wi-Fi",
-      "ssh Stas@10.0.0.254", "scp backup.rsc Stas@10.0.0.254:",
-      "ssh-keygen -t ed25519", "ssh-copy-id Stas@10.0.0.254"
+      "uname -a", "cat /etc/os-release", "uptime",
+      "vcgencmd measure_temp", "vcgencmd get_throttled",
+      "free -h", "df -h", "du -sh ~/projects",
+      "ps aux | grep python", "top"
+    ]
+  },
+  python: {
+    id: "python", title: "7. Python на Pi",
+    intro: "venv, pip, запуск скриптів на Raspberry Pi.",
+    commands: [
+      "python3 --version", "python3 -m venv .venv",
+      "source .venv/bin/activate", "pip3 install requests",
+      "python3 main.py", "deactivate"
+    ]
+  },
+  gpio: {
+    id: "gpio", title: "8. GPIO та залізо",
+    intro: "pinout, gpiochip — обережно з 3.3V logic!",
+    commands: [
+      "pinout", "gpiodetect", "gpioinfo", "ls /dev/gpiochip*"
+    ]
+  },
+  systemd: {
+    id: "systemd", title: "9. systemd services",
+    intro: "Автозапуск Python-скриптів через systemd.",
+    commands: [
+      "systemctl status my-service", "sudo systemctl start my-service",
+      "sudo systemctl enable my-service", "journalctl -u my-service -f"
+    ]
+  },
+  logs: {
+    id: "logs", title: "10. Логи та діагностика",
+    intro: "journalctl, dmesg — знаходимо помилки.",
+    commands: [
+      "journalctl -xe", "journalctl -u my-service -f", "dmesg | tail -50"
     ]
   },
   git: {
-    id: "git", title: "6. Git та GitHub",
-    intro: "Статус, commit, push, pull, diff — робочий цикл з GitHub.",
+    id: "git", title: "11. Git workflow",
+    intro: "Клонування та оновлення проєктів на Pi.",
     commands: [
-      "git status", "git add .", "git commit -m \"message\"", "git push",
-      "git pull", "git log --oneline", "git branch", "git switch feature",
-      "git diff", "git restore file.txt", "gh auth status", "gh repo view"
+      "git status", "git clone https://github.com/user/project.git",
+      "git pull", "git log --oneline"
     ]
   },
-  dev: {
-    id: "dev", title: "7. Python, Node, Homebrew",
-    intro: "Версії, пакети, запуск проєктів, установка утиліт через brew.",
+  transfer: {
+    id: "transfer", title: "12. Передача файлів Mac→Pi",
+    intro: "scp і rsync з Mac Terminal на Raspberry Pi.",
     commands: [
-      "python3 --version", "pip3 list", "node --version", "npm run dev",
-      "npx create-next-app", "brew --version", "brew list",
-      "brew search wget", "brew install wget"
-    ]
-  },
-  ai: {
-    id: "ai", title: "8. AI CLI агенти",
-    intro: "claude, codex, gemini, grok — спочатку git status, потім агент!",
-    commands: [
-      "which claude", "which codex", "which gemini", "which grok",
-      "claude", "codex", "gemini", "grok"
+      "scp main.py stanislav@raspberrypi.local:/home/stanislav/projects/",
+      "rsync -av ./project/ stanislav@raspberrypi.local:/home/stanislav/projects/project/"
     ]
   },
   danger: {
-    id: "danger", title: "9. Небезпечні команди",
-    intro: "Розуміння ризику: sudo, rm -rf, curl|bash, diskutil.",
+    id: "danger", title: "13. Небезпечні команди",
+    intro: "sudo, rm -rf, curl|bash, reboot, shutdown — розуміння ризику.",
     commands: [
-      "sudo", "rm -rf folder", "diskutil list", "kill 1234",
-      "curl -fsSL URL | bash"
+      "rm -rf folder", "curl -fsSL URL | bash",
+      "sudo reboot", "sudo shutdown -h now"
     ]
   },
   practice: {
-    id: "practice", title: "10. Щоденна практика",
-    intro: "Команди з 14-денного плану — закріплення навичок.",
+    id: "practice", title: "14. Щоденна практика",
+    intro: "Закріплення ключових команд 14-денного плану.",
     commands: [
-      "pwd", "ls -la", "cd ~/Projects", "mkdir practice-day1",
-      "git status", "ping -c 3 8.8.8.8", "which brew", "man ls"
+      "ssh stanislav@10.0.0.50", "pwd", "ls -la", "sudo apt update",
+      "vcgencmd measure_temp", "python3 main.py", "systemctl status my-service"
     ]
   }
 };
 
 const SIM = {
-  user: "Stas",
-  host: "MacBook-Pro",
-  shell: "/bin/zsh",
-  cwd: "~/Projects/demo",
-  ip: "192.168.1.42",
-  gateway: "192.168.1.1",
-  mikrotik: "10.0.0.254",
-  files: { "readme.md": "# Demo\nTODO: learn Terminal\n", "file.txt": "hello\n", "log.txt": "[INFO] started\n" },
-  dirs: ["src", "docs"],
-  git: { init: true, branch: "main", branches: ["main", "feature"], staged: [], commits: [
-    { hash: "a1b2c3d", msg: "Initial commit" }
-  ], dirty: ["readme.md"] },
-  clipboard: "copied text",
-  sshConnected: false
+  user: "stanislav",
+  host: "raspberrypi",
+  shell: "/bin/bash",
+  cwd: "/home/stanislav",
+  home: "/home/stanislav",
+  ip: "10.0.0.50",
+  gateway: "10.0.0.1",
+  temp: "45.2'C",
+  files: { "main.py": "print('Hello Pi')\n", "log.txt": "[INFO] service started\n" },
+  dirs: ["projects", "led-test"],
+  venvActive: false,
+  sshFromMac: true,
+  serviceRunning: true
 };
 
 const state = {
-  currentModule: "basics",
+  currentModule: "ssh",
   history: [], histIdx: -1,
   triedByModule: Object.fromEntries(Object.keys(MODULES).map(k => [k, new Set()])),
   selectedScenario: null,
@@ -239,7 +262,6 @@ function beginView(cmd) {
   viewChunks = [];
   if (cmd != null) viewChunks.push(`<div class="line-user">${esc(promptLabel.textContent)} ${esc(cmd)}</div>`);
 }
-function print(html, cls = "line-sys") { viewChunks.push(`<div class="${cls}">${html}</div>`); }
 function ukHint(text) { return `<div class="line-uk-hint">${esc(text)}</div>`; }
 function printResult(title, body, type = "ok", hint = null) {
   const cls = type === "warn" ? "result-box warn" : type === "purple" ? "result-box purple" : type === "danger" ? "result-box danger" : "result-box";
@@ -251,35 +273,34 @@ function flushView(status) {
   if (status) outputStatus.textContent = status;
 }
 
-function updatePrompt() {
-  const short = SIM.cwd.replace(/^~/, "").split("/").pop() || "~";
-  const label = `${SIM.user}@${SIM.host} ${short} %`;
-  promptLabel.textContent = label;
-  termTitle.textContent = `${SIM.user}@${SIM.host} — zsh — ${SIM.cwd}`;
+function shortCwd() {
+  if (SIM.cwd === SIM.home) return "~";
+  if (SIM.cwd.startsWith(SIM.home + "/")) return "~" + SIM.cwd.slice(SIM.home.length);
+  return SIM.cwd;
 }
 
-function normalizeCmd(raw) {
-  const c = raw.trim();
-  for (const mod of Object.values(MODULES)) {
-    const ex = mod.commands.find(x => x === c || c.startsWith(x.split(" ")[0]));
-    if (mod.commands.includes(c)) return c;
-  }
-  for (const mod of Object.values(MODULES)) {
-    const hit = mod.commands.find(x => {
-      if (x === c) return true;
-      const base = x.split(" ")[0];
-      return c.startsWith(base + " ") || c === base;
-    });
-    if (hit && mod.commands.includes(hit)) return hit;
-  }
-  return c;
+function updatePrompt() {
+  const venv = SIM.venvActive ? "(.venv) " : "";
+  const short = shortCwd();
+  const pathPart = short === "~" ? "~" : `~${short.slice(1)}`;
+  promptLabel.textContent = `${venv}${SIM.user}@${SIM.host}:${pathPart}$`;
+  termTitle.textContent = `${SIM.user}@${SIM.host} — bash — ${SIM.cwd}`;
 }
 
 function findListedCommand(cmd, commands) {
   if (commands.includes(cmd)) return cmd;
   return commands.find(x => {
-    const b = x.split(" ")[0];
-    return cmd === b || cmd.startsWith(b + " ");
+    if (cmd === x) return true;
+    const parts = x.split(" ");
+    const base = parts[0];
+    if (cmd === base) return true;
+    if (cmd.startsWith(base + " ")) {
+      const cmdParts = cmd.split(" ");
+      const xParts = x.split(" ");
+      if (x.includes("|")) return cmd.includes("|") && cmd.includes(x.split("|")[0].trim().split(" ").pop());
+      return cmdParts.length >= Math.min(2, xParts.length);
+    }
+    return false;
   }) || null;
 }
 
@@ -289,6 +310,9 @@ function findModuleForCommand(cmd) {
     if (findListedCommand(cmd, mod.commands)) return mod.id;
   }
   return null;
+}
+function getHint(cmd, listed) {
+  return UK_HINTS[listed] || UK_HINTS[cmd] || null;
 }
 
 function markTried(cmd) {
@@ -313,7 +337,7 @@ function updateModuleNav() {
     const t = state.triedByModule[mod.id];
     const pct = mod.commands.length ? Math.round((t.size / mod.commands.length) * 100) : 0;
     const act = mod.id === state.currentModule ? " active" : "";
-    return `<button type="button" class="btn${act}" data-module="${mod.id}">${esc(mod.title)} · ${t.size}/${mod.commands.length} (${pct}%)</button>`;
+    return `<button type="button" class="btn${act}" data-module="${mod.id}">${esc(mod.title)} · ${t.size}/${mod.commands.length}</button>`;
   }).join("");
   moduleNav.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => switchModule(btn.dataset.module));
@@ -341,382 +365,320 @@ function switchModule(id, showWelcome = true) {
   printResult(`Розділ: ${m.title}`, `
     <span class="line-muted">${esc(m.intro)}</span><br>
     <span class="line-hl">Команд:</span> ${m.commands.length}
-  `, "purple", "Список команд зліва оновився. Клікни або введи вручну.");
-  flushView(`% · ${m.title}`);
+  `, "purple", GOAL_PHRASE);
+  flushView(`$ · ${m.title}`);
 }
 
 function resetState() {
-  SIM.files = { "readme.md": "# Demo\nTODO: learn Terminal\n", "file.txt": "hello\n", "log.txt": "[INFO] started\n" };
-  SIM.dirs = ["src", "docs"];
-  SIM.cwd = "~/Projects/demo";
-  SIM.sshConnected = false;
-  SIM.git.dirty = ["readme.md"];
-  SIM.git.staged = [];
+  SIM.cwd = SIM.home;
+  SIM.venvActive = false;
+  SIM.sshFromMac = true;
+  SIM.serviceRunning = true;
+  SIM.files = { "main.py": "print('Hello Pi')\n", "log.txt": "[INFO] service started\n" };
+  SIM.dirs = ["projects", "led-test"];
   updatePrompt();
 }
 
 function welcome() {
   beginView(null);
-  print(`<span class="line-muted">Mac Terminal Trainer — емуляція zsh (без реального виконання)</span>`);
-  printResult("Почни з розділу Terminal basics", `
-    <span class="line-cmd">echo $SHELL</span> · <span class="line-cmd">pwd</span> · <span class="line-cmd">ls</span><br>
-    <span class="line-muted">10 сценаріїв · GitHub · MikroTik · AI CLI</span>
-  `, "ok", "Головна мета — не вивчити всі команди, а швидко знаходити потрібну, розуміти ризик і застосовувати в реальному сценарії.");
-  flushView("% · Mac Terminal емулятор (zsh)");
-}
-
-function getHint(cmd, listed) {
-  return UK_HINTS[listed] || UK_HINTS[cmd] || UK_HINTS[cmd.split(" ")[0]] || null;
+  print(`<span class="line-muted">Raspberry Pi 5 Terminal Trainer — емуляція bash (без реального SSH)</span>`);
+  printResult("Почни з SSH", `
+    <span class="line-cmd">ping raspberrypi.local</span> · <span class="line-cmd">ssh stanislav@10.0.0.50</span><br>
+    <span class="line-muted">14 розділів · GPIO · systemd · apt</span>
+  `, "ok", GOAL_PHRASE);
+  flushView("$ · Raspberry Pi 5 емулятор");
 }
 
 function handleCommand(cmd) {
   const lower = cmd.toLowerCase().trim();
   const listed = findListedCommand(cmd, getCurrentCommands()) || cmd;
   const hint = getHint(cmd, listed);
-
   const owner = findModuleForCommand(cmd);
+
   if (!isInCurrentModule(cmd) && owner && owner !== state.currentModule) {
     print(`<span class="line-warn">⚠ «${esc(cmd)}» — зазвичай у «${esc(MODULES[owner].title)}»</span>`);
   }
 
-  // Basics
-  if (lower === "echo $shell") {
-    printResult("echo $SHELL", `<span class="line-ok">${esc(SIM.shell)}</span>`, "ok", hint);
+  // SSH / session
+  if (lower.startsWith("ping ")) {
+    const host = lower.includes("10.0.0.50") ? SIM.ip : "raspberrypi.local";
+    printResult(cmd, `<span class="line-ok">PING ${esc(host)}: 3 packets, 0% loss, avg 1.2ms</span>`, "ok", hint);
     return true;
   }
-  if (lower === "whoami") {
-    printResult("whoami", `<span class="line-ok">${esc(SIM.user)}</span>`, "ok", hint);
+  if (lower.startsWith("ssh ")) {
+    SIM.sshFromMac = false;
+    printResult(cmd, `
+      <span class="line-ok">Connected to ${esc(SIM.host)} (${esc(SIM.ip)})</span><br>
+      <span class="line-muted">Linux raspberrypi 6.6.31-rpi-2712 aarch64</span>
+    `, "ok", hint);
+    return true;
+  }
+  if (lower === "exit") {
+    SIM.sshFromMac = true;
+    printResult("exit", `<span class="line-ok">Connection to ${esc(SIM.host)} closed.</span><br><span class="line-muted">→ Mac Terminal</span>`, "ok", hint);
     return true;
   }
   if (lower === "hostname") {
     printResult("hostname", `<span class="line-ok">${esc(SIM.host)}</span>`, "ok", hint);
     return true;
   }
+  if (lower === "whoami") {
+    printResult("whoami", `<span class="line-ok">${esc(SIM.user)}</span>`, "ok", hint);
+    return true;
+  }
   if (lower === "pwd") {
     printResult("pwd", `<span class="line-ok">${esc(SIM.cwd)}</span>`, "ok", hint);
     return true;
   }
+
+  // Basics
+  if (lower === "echo $shell") {
+    printResult(cmd, `<span class="line-ok">${esc(SIM.shell)}</span>`, "ok", hint);
+    return true;
+  }
   if (lower === "clear") { welcome(); return true; }
   if (lower === "history") {
-    const lines = state.history.length
-      ? state.history.map((h, i) => `${i + 1}  ${esc(h)}`).join("<br>")
-      : `<span class="line-muted">(порожньо)</span>`;
+    const lines = state.history.length ? state.history.map((h,i) => `${i+1} ${esc(h)}`).join("<br>") : `<span class="line-muted">(empty)</span>`;
     printResult("history", lines, "ok", hint);
     return true;
   }
-  if (lower.startsWith("which ")) {
-    const tool = cmd.slice(6).trim();
-    const paths = { git: "/usr/bin/git", python3: "/usr/bin/python3", claude: "/opt/homebrew/bin/claude",
-      codex: "/opt/homebrew/bin/codex", gemini: "/opt/homebrew/bin/gemini", grok: "/opt/homebrew/bin/grok", brew: "/opt/homebrew/bin/brew" };
-    printResult(cmd, paths[tool]
-      ? `<span class="line-ok">${esc(paths[tool])}</span>`
-      : `<span class="line-err">${esc(tool)} not found</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("command -v ")) {
-    const tool = cmd.slice(11).trim();
-    printResult(cmd, `<span class="line-ok">/usr/bin/${esc(tool)}</span>`, "ok", hint);
+  if (lower.startsWith("which ") || lower.startsWith("command -v ")) {
+    printResult(cmd, `<span class="line-ok">/usr/bin/${esc(cmd.split(" ").pop())}</span>`, "ok", hint);
     return true;
   }
   if (lower === "echo $path") {
-    printResult("echo $PATH", `<span class="line-ok">/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin</span>`, "ok", hint);
+    printResult(cmd, `<span class="line-ok">/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin</span>`, "ok", hint);
     return true;
   }
   if (lower.includes("echo $path") && lower.includes("tr")) {
-    printResult(cmd, `<span class="line-ok">/usr/bin<br>/bin<br>/usr/sbin<br>/sbin<br>/opt/homebrew/bin</span>`, "ok", hint);
+    printResult(cmd, `<span class="line-ok">/usr/local/bin<br>/usr/bin<br>/bin<br>/sbin</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("man ")) {
-    printResult(cmd, `<span class="line-muted">MAN(1) ${esc(cmd.slice(4))} — manual page (emulated). Натисни q для виходу.</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("apropos ")) {
-    printResult(cmd, `<span class="line-ok">networksetup (8) - configure network<br>ifconfig (8) - configure network interface</span>`, "ok", hint);
+  if (lower.startsWith("man ") || lower.startsWith("apropos ")) {
+    printResult(cmd, `<span class="line-muted">Manual page (emulated). Press q to quit.</span>`, "ok", hint);
     return true;
   }
 
   // Files
   if (lower === "ls" || lower === "ls -la") {
-    const detailed = lower.includes("-la");
     const names = [...SIM.dirs, ...Object.keys(SIM.files)];
-    const out = detailed
-      ? names.map(n => `drwxr-xr-x  1 ${SIM.user}  staff  64 Jun 30 12:00 ${esc(n)}`).join("<br>")
+    const out = lower.includes("-la")
+      ? names.map(n => `drwxr-xr-x 2 ${SIM.user} ${SIM.user} 4096 Jun 30 12:00 ${esc(n)}`).join("<br>")
       : names.join("  ");
     printResult(lower, `<span class="line-ok">${out}</span>`, "ok", hint);
     return true;
   }
-  if (lower === "cd" || lower.startsWith("cd ")) {
-    const t = lower === "cd" ? "~" : cmd.slice(3).trim();
-    if (t === "~" || t === "") SIM.cwd = `~/${SIM.user}`;
-    else if (t === "..") SIM.cwd = "~/Projects";
-    else if (t.startsWith("~/")) SIM.cwd = t;
-    else SIM.cwd = `~/Projects/demo/${t}`;
+  if (lower.startsWith("cd ")) {
+    const t = cmd.slice(3).trim();
+    if (t === "~" || t === "") SIM.cwd = SIM.home;
+    else if (t === "..") SIM.cwd = SIM.home;
+    else if (t.startsWith("~/")) SIM.cwd = SIM.home + t.slice(1);
+    else SIM.cwd = `${SIM.home}/${t}`;
     updatePrompt();
-    printResult("cd", `<span class="line-ok">→ ${esc(SIM.cwd)}</span>`, "ok", hint || UK_HINTS.cd);
-    return true;
-  }
-  if (lower === "open .") {
-    printResult("open .", `<span class="line-ok">✓ Відкрито у Finder: ${esc(SIM.cwd)}</span>`, "ok", hint);
+    printResult("cd", `<span class="line-ok">→ ${esc(SIM.cwd)}</span>`, "ok", hint);
     return true;
   }
   if (lower.startsWith("mkdir ")) {
     const d = cmd.slice(6).trim();
-    if (d && !SIM.dirs.includes(d)) SIM.dirs.push(d);
-    printResult(cmd, `<span class="line-ok">✓ Створено ${esc(d)}</span>`, "ok", hint);
+    if (d && !SIM.dirs.includes(d)) SIM.dirs.push(d.split("/").pop());
+    printResult(cmd, `<span class="line-ok">✓ mkdir ${esc(d)}</span>`, "ok", hint);
     return true;
   }
   if (lower.startsWith("touch ")) {
     const f = cmd.slice(6).trim();
-    if (f) SIM.files[f] = SIM.files[f] || "";
+    SIM.files[f] = SIM.files[f] || "";
     printResult(cmd, `<span class="line-ok">✓ ${esc(f)}</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("cp ")) {
-    printResult(cmd, `<span class="line-ok">✓ Скопійовано</span>`, "ok", hint);
+  if (lower.startsWith("nano ")) {
+    printResult(cmd, `<span class="line-ok">[ nano editor — emulated ]<br>^O Save · ^X Exit</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("mv ")) {
-    printResult(cmd, `<span class="line-ok">✓ Переміщено/перейменовано</span>`, "ok", hint);
+  if (lower.startsWith("cat ") || lower.startsWith("less ") || lower.startsWith("head ") || lower.startsWith("tail ")) {
+    const f = cmd.split(" ").filter(p => !p.startsWith("-")).pop();
+    printResult(cmd, `<span class="line-ok">${esc(SIM.files[f] || "(file content)")}</span>`, "ok", hint);
+    return true;
+  }
+  if (lower.startsWith("cp ") || lower.startsWith("mv ")) {
+    printResult(cmd, `<span class="line-ok">✓ Done</span>`, "ok", hint);
     return true;
   }
   if (lower.startsWith("rm -rf ")) {
-    printResult(cmd, `<span class="line-warn">⚠ ЕМУЛЯЦІЯ: папку видалено БЕЗ підтвердження</span><br><span class="line-err">У реальному Mac це незворотно!</span>`, "danger", hint);
+    printResult(cmd, `<span class="line-err">⚠ ЕМУЛЯЦІЯ: видалено без підтвердження. У реальному Linux — незворотно!</span>`, "danger", hint);
     return true;
   }
-  if (lower.startsWith("rm -r ") || lower.startsWith("rm ")) {
-    const f = cmd.split(" ").pop();
-    delete SIM.files[f];
-    printResult(cmd, `<span class="line-ok">✓ Видалено ${esc(f)}</span>`, lower.includes("-r") ? "warn" : "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("rmdir ")) {
-    printResult(cmd, `<span class="line-ok">✓ Порожню папку видалено</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("cat ")) {
-    const f = cmd.slice(4).trim();
-    printResult(cmd, `<span class="line-ok">${esc(SIM.files[f] || "(empty)")}</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("less ") || lower.startsWith("head ") || lower.startsWith("tail ")) {
-    const f = cmd.split(" ").pop();
-    const content = SIM.files[f] || "[INFO] log line\n";
-    printResult(cmd, `<span class="line-ok">${esc(content)}</span>`, "ok", hint);
+  if (lower.startsWith("rm ") || lower.startsWith("rmdir ")) {
+    printResult(cmd, `<span class="line-ok">✓ Removed</span>`, lower.includes("-r") ? "warn" : "ok", hint);
     return true;
   }
 
-  // Search
-  if (lower.startsWith("find ")) {
-    printResult(cmd, `<span class="line-ok">./readme.md<br>./docs/guide.md</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("grep ")) {
-    printResult(cmd, `<span class="line-ok">readme.md:TODO: learn Terminal</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("wc ") || lower.startsWith("sort ") || lower.startsWith("uniq ") ||
-      lower.startsWith("cut ") || lower.startsWith("tr ") || lower === "xargs" || lower.startsWith("mdfind ")) {
-    printResult(cmd, `<span class="line-ok">✓ (emulated output)</span>`, "ok", hint);
-    return true;
-  }
-  if (lower === "pbcopy") {
-    SIM.clipboard = "hello from file";
-    printResult("pbcopy", `<span class="line-ok">✓ Скопійовано в буфер обміну</span>`, "ok", hint);
-    return true;
-  }
-  if (lower === "pbpaste") {
-    printResult("pbpaste", `<span class="line-ok">${esc(SIM.clipboard)}</span>`, "ok", hint);
+  // apt
+  if (lower.startsWith("sudo apt ") || lower.startsWith("apt ")) {
+    const sub = lower.replace("sudo ", "");
+    let out = "✓ Done";
+    if (sub.includes("update")) out = "Hit:1 http://archive.raspberrypi.com/debian bookworm InRelease\nReading package lists... Done";
+    else if (sub.includes("upgrade")) out = "0 upgraded, 0 newly installed, 0 to remove";
+    else if (sub.includes("install")) out = `Setting up ${cmd.split(" ").pop()} ... done`;
+    else if (sub.includes("search")) out = "python3-gpiozero/stable\npython3-rpi.gpio/stable";
+    else if (sub.includes("show")) out = "Package: git\nVersion: 1:2.39.2-1.1";
+    else if (sub.includes("list")) out = "git/stable,now 1:2.39.2 arm64 [installed]";
+    printResult(cmd, `<span class="line-ok">${out}</span>`, sub.includes("install") || sub.includes("upgrade") ? "warn" : "ok", hint);
     return true;
   }
 
   // Network
-  if (lower.startsWith("ping ")) {
-    const host = lower.includes("10.0.0.254") ? SIM.mikrotik : "8.8.8.8";
-    printResult(cmd, `
-      <span class="line-ok">PING ${esc(host)}: 3 packets transmitted, 3 received, 0% packet loss</span><br>
-      <span class="line-muted">round-trip min/avg/max = 2.1/3.4/5.2 ms</span>
-    `, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("traceroute ")) {
-    printResult(cmd, `<span class="line-ok">1  ${esc(SIM.gateway)}  2.1 ms<br>2  10.0.0.1  5.3 ms<br>3  google.com  12.1 ms</span>`, "ok", hint);
-    return true;
-  }
-  if (lower === "route get default") {
-    printResult(cmd, `<span class="line-ok">gateway: ${esc(SIM.gateway)}<br>interface: en0</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("ifconfig")) {
-    printResult(cmd, `<span class="line-ok">en0: inet ${esc(SIM.ip)} netmask 0xffffff00</span>`, "ok", hint);
-    return true;
-  }
-  if (lower === "ipconfig getifaddr en0") {
+  if (cmd.trim() === "hostname -I") {
     printResult(cmd, `<span class="line-ok">${esc(SIM.ip)}</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("networksetup ")) {
-    const info = lower.includes("getinfo")
-      ? `IP address: ${SIM.ip}<br>Router: ${SIM.gateway}<br>DNS: 8.8.8.8`
-      : `Hardware Port: Wi-Fi<br>Device: en0<br>Hardware Port: Ethernet`;
-    printResult(cmd, `<span class="line-ok">${info}</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("dig ") || lower.startsWith("nslookup ")) {
-    printResult(cmd, `<span class="line-ok">google.com → 142.250.185.78</span>`, "ok", hint);
+  if (lower === "ip addr" || lower === "ip route") {
+    const out = lower.includes("route")
+      ? `default via ${SIM.gateway} dev wlan0`
+      : `wlan0: inet ${SIM.ip}/24`;
+    printResult(cmd, `<span class="line-ok">${esc(out)}</span>`, "ok", hint);
     return true;
   }
   if (lower.startsWith("curl ")) {
     if (lower.includes("| bash")) {
-      printResult(cmd, `<span class="line-err">⚠ НЕБЕЗПЕЧНО: скрипт з інтернету виконано без перегляду!</span>`, "danger", hint);
+      printResult(cmd, `<span class="line-err">⚠ Script executed without review!</span>`, "danger", hint);
       return true;
     }
-    printResult(cmd, `<span class="line-ok">HTTP/2 200<br>content-type: text/html</span>`, "ok", hint);
+    printResult(cmd, `<span class="line-ok">HTTP/2 200 OK</span>`, "ok", hint);
     return true;
   }
-  if (lower.includes("netstat") || lower.startsWith("lsof ")) {
-    printResult(cmd, `<span class="line-ok">tcp4  0  0  *.22  *.*  LISTEN</span>`, "ok", hint);
-    return true;
-  }
-
-  // SSH
-  if (lower.startsWith("ssh-keygen")) {
-    printResult(cmd, `<span class="line-ok">✓ Generated ED25519 key ~/.ssh/id_ed25519</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("ssh-copy-id")) {
-    printResult(cmd, `<span class="line-ok">✓ Key copied to ${esc(SIM.mikrotik)}</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("ssh ")) {
-    SIM.sshConnected = true;
-    printResult(cmd, `
-      <span class="line-ok">Connecting to ${esc(SIM.mikrotik)}…</span><br>
-      <span class="line-hl">Stas@MikroTik&gt;</span> <span class="line-muted">RouterOS 7.x (emulated)</span>
-    `, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("scp ")) {
-    printResult(cmd, `<span class="line-ok">backup.rsc  100%  12KB  1.2MB/s</span>`, "ok", hint);
+  if (lower.startsWith("ss ") || lower === "rfkill list") {
+    printResult(cmd, `<span class="line-ok">tcp LISTEN 0.0.0.0:22 (sshd)<br>Soft blocked: no (Wi-Fi)</span>`, "ok", hint);
     return true;
   }
 
-  // Git
-  if (lower === "git status") {
-    printResult(cmd, `
-      <span class="line-hl">On branch ${esc(SIM.git.branch)}</span><br>
-      ${SIM.git.dirty.length ? `<span class="line-warn">Modified: ${SIM.git.dirty.join(", ")}</span>` : `<span class="line-muted">nothing to commit</span>`}
-    `, "ok", hint);
+  // System
+  if (lower === "uname -a") {
+    printResult(cmd, `<span class="line-ok">Linux raspberrypi 6.6.31-rpi-2712 aarch64 GNU/Linux</span>`, "ok", hint);
     return true;
   }
-  if (lower === "git add .") {
-    SIM.git.staged = [...SIM.git.dirty];
-    printResult(cmd, `<span class="line-ok">✓ Staged all changes</span>`, "ok", hint);
+  if (lower === "cat /etc/os-release") {
+    printResult(cmd, `<span class="line-ok">PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"<br>ID=debian</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("git commit")) {
-    SIM.git.commits.push({ hash: Math.random().toString(16).slice(2,9), msg: "message" });
-    SIM.git.dirty = []; SIM.git.staged = [];
-    printResult(cmd, `<span class="line-ok">[${esc(SIM.git.branch)}] commit created</span>`, "ok", hint);
+  if (lower === "uptime") {
+    printResult(cmd, `<span class="line-ok">up 2 days, 3:15, load average: 0.12, 0.08, 0.05</span>`, "ok", hint);
     return true;
   }
-  if (lower === "git push") {
-    printResult(cmd, `<span class="line-ok">To github.com:StsZu/demo.git<br>   main -> main</span>`, "ok", hint);
+  if (lower === "vcgencmd measure_temp") {
+    printResult(cmd, `<span class="line-ok">temp=${esc(SIM.temp)}</span>`, "ok", hint);
     return true;
   }
-  if (lower === "git pull") {
-    printResult(cmd, `<span class="line-ok">Already up to date.</span>`, "ok", hint);
+  if (lower === "vcgencmd get_throttled") {
+    printResult(cmd, `<span class="line-ok">throttled=0x0</span><br><span class="line-muted">0x0 = OK, no undervoltage or throttling</span>`, "ok", hint);
     return true;
   }
-  if (lower === "git log --oneline") {
-    const lines = SIM.git.commits.map(c => `<span class="line-ok">${esc(c.hash.slice(0,7))}</span> ${esc(c.msg)}`).join("<br>");
-    printResult(cmd, lines, "ok", hint);
+  if (lower === "free -h") {
+    printResult(cmd, `<span class="line-ok">Mem: 7.9Gi total, 1.2Gi used, 6.5Gi available</span>`, "ok", hint);
     return true;
   }
-  if (lower === "git branch") {
-    printResult(cmd, SIM.git.branches.map(b => b === SIM.git.branch ? `<span class="line-ok">* ${b}</span>` : `  ${b}`).join("<br>"), "ok", hint);
+  if (lower === "df -h") {
+    printResult(cmd, `<span class="line-ok">/dev/mmcblk0p2  59G  12G  45G  22% /</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("git switch") || lower.startsWith("git checkout")) {
-    SIM.git.branch = "feature";
-    printResult(cmd, `<span class="line-ok">Switched to branch 'feature'</span>`, "ok", hint);
+  if (lower.startsWith("du ")) {
+    printResult(cmd, `<span class="line-ok">24M\t/home/stanislav/projects</span>`, "ok", hint);
     return true;
   }
-  if (lower === "git diff" || lower.startsWith("git restore")) {
-    printResult(cmd, `<span class="line-ok">diff --git a/readme.md (emulated)</span>`, "ok", hint);
-    return true;
-  }
-  if (lower === "gh auth status") {
-    printResult(cmd, `<span class="line-ok">✓ Logged in to github.com as StsZu</span>`, "ok", hint);
-    return true;
-  }
-  if (lower === "gh repo view") {
-    printResult(cmd, `<span class="line-ok">StsZu/mac-terminal-course<br>description: Mac Terminal CLI tutorial</span>`, "ok", hint);
+  if (lower.includes("ps aux") || lower === "top") {
+    printResult(cmd, `<span class="line-ok">stanislav 1234 python3 main.py<br>root 567 sshd</span>`, "ok", hint);
     return true;
   }
 
-  // Dev
+  // Python
   if (lower === "python3 --version") {
-    printResult(cmd, `<span class="line-ok">Python 3.12.4</span>`, "ok", hint);
+    printResult(cmd, `<span class="line-ok">Python 3.11.2</span>`, "ok", hint);
     return true;
   }
-  if (lower === "pip3 list") {
-    printResult(cmd, `<span class="line-ok">requests  2.31.0<br>uv  0.4.0</span>`, "ok", hint);
+  if (lower === "python3 -m venv .venv") {
+    printResult(cmd, `<span class="line-ok">✓ Created .venv</span>`, "ok", hint);
     return true;
   }
-  if (lower === "node --version") {
-    printResult(cmd, `<span class="line-ok">v22.3.0</span>`, "ok", hint);
+  if (lower === "source .venv/bin/activate") {
+    SIM.venvActive = true;
+    updatePrompt();
+    printResult(cmd, `<span class="line-ok">✓ venv activated</span>`, "ok", hint);
     return true;
   }
-  if (lower === "npm run dev") {
-    printResult(cmd, `<span class="line-ok">▶ dev server http://localhost:3000</span>`, "ok", hint);
+  if (lower === "deactivate") {
+    SIM.venvActive = false;
+    updatePrompt();
+    printResult(cmd, `<span class="line-ok">✓ venv deactivated</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("npx ")) {
-    printResult(cmd, `<span class="line-ok">✓ npx package executed (emulated)</span>`, "ok", hint);
-    return true;
-  }
-  if (lower.startsWith("brew ")) {
-    const sub = lower.split(" ")[1];
-    const out = sub === "--version" ? "Homebrew 4.3.0"
-      : sub === "list" ? "git\nnode\npython@3.12\nwget"
-      : sub === "search" ? "wget (wget)"
-      : sub === "install" ? "✓ wget installed"
-      : "✓ (emulated)";
+  if (lower.startsWith("pip3 ") || lower === "python3 main.py") {
+    const out = lower.includes("install") ? "Successfully installed requests-2.31.0" : "Hello Pi";
     printResult(cmd, `<span class="line-ok">${out}</span>`, "ok", hint);
     return true;
   }
 
-  // AI CLI
-  if (["claude","codex","gemini","grok"].includes(lower)) {
-    printResult(cmd, `
-      <span class="line-hl">${esc(cmd)} CLI</span> <span class="line-muted">— interactive agent (emulated)</span><br>
-      <span class="line-warn">Перед запуском: git status + commit або backup!</span>
-    `, "purple", hint);
+  // GPIO
+  if (lower === "pinout") {
+    printResult(cmd, `<span class="line-ok">GPIO pinout diagram (Pi 5)<br>3.3V logic · do not connect 5V loads directly!</span>`, "warn", hint);
+    return true;
+  }
+  if (lower === "gpiodetect") {
+    printResult(cmd, `<span class="line-ok">gpiochip0 [pinctrl-rp1] (54 lines)<br>gpiochip10 [gpio-brcmstb@107d508500] (4 lines)</span>`, "ok", hint);
+    return true;
+  }
+  if (lower === "gpioinfo" || lower.startsWith("ls /dev/gpiochip")) {
+    printResult(cmd, `<span class="line-ok">/dev/gpiochip0<br>/dev/gpiochip10</span>`, "ok", hint);
     return true;
   }
 
-  // Danger
-  if (lower === "sudo" || lower.startsWith("sudo ")) {
-    printResult(cmd, `<span class="line-err">⚠ Потрібен пароль root. Переконайся, що знаєш що робиш!</span>`, "danger", hint);
+  // systemd
+  if (lower.includes("systemctl")) {
+    const running = lower.includes("stop") ? false : lower.includes("start") || lower.includes("enable") ? true : SIM.serviceRunning;
+    if (lower.includes("start")) SIM.serviceRunning = true;
+    if (lower.includes("stop")) SIM.serviceRunning = false;
+    const status = running ? "active (running)" : "inactive (dead)";
+    printResult(cmd, `<span class="line-ok">my-service.service - ${status}</span>`, lower.includes("sudo") ? "warn" : "ok", hint);
     return true;
   }
-  if (lower.startsWith("diskutil ")) {
-    printResult(cmd, `<span class="line-warn">/dev/disk0 (internal)<br>/dev/disk3 (synthesized) — НЕ форматуй без backup!</span>`, "danger", hint);
+  if (lower.includes("journalctl")) {
+    printResult(cmd, `<span class="line-ok">Jun 30 12:00:01 raspberrypi python3[1234]: Hello Pi<br>-- Logs end --</span>`, "ok", hint);
     return true;
   }
-  if (lower.startsWith("kill ")) {
-    printResult(cmd, `<span class="line-warn">⚠ Процес 1234 завершено (emulated)</span>`, "warn", hint);
+  if (lower.startsWith("dmesg")) {
+    printResult(cmd, `<span class="line-ok">[  123.45] wlan0: connected to AP</span>`, "ok", hint);
+    return true;
+  }
+
+  // Git
+  if (lower.startsWith("git ")) {
+    let out = "✓";
+    if (lower === "git status") out = "On branch main\nnothing to commit, working tree clean";
+    else if (lower.includes("clone")) out = "Cloning into 'project'... done";
+    else if (lower === "git pull") out = "Already up to date.";
+    else if (lower === "git log --oneline") out = "a1b2c3d Initial commit";
+    printResult(cmd, `<span class="line-ok">${esc(out)}</span>`, "ok", hint);
+    return true;
+  }
+
+  // Transfer (from Mac)
+  if (lower.startsWith("scp ") || lower.startsWith("rsync ")) {
+    printResult(cmd, `<span class="line-ok">main.py 100% 256B 1.2MB/s<br>→ ${esc(SIM.home)}/projects/</span>`, "ok", hint);
+    return true;
+  }
+
+  // Danger / power
+  if (lower === "sudo reboot") {
+    printResult(cmd, `<span class="line-warn">⚠ Pi перезавантажується — SSH-сесія обірветься!</span>`, "warn", hint);
+    return true;
+  }
+  if (lower === "sudo shutdown -h now") {
+    printResult(cmd, `<span class="line-warn">⚠ Pi вимикається. Увімкніть знову фізично.</span>`, "warn", hint);
     return true;
   }
 
   if (owner) {
-    printResult("Команда з іншого розділу", `
-      <span class="line-muted">«${esc(cmd)}» — у «${esc(MODULES[owner].title)}»</span>
-    `, "warn");
+    printResult("Інший розділ", `<span class="line-muted">«${esc(cmd)}» → ${esc(MODULES[owner].title)}</span>`, "warn");
   } else {
-    printResult("Невідома команда", `
-      <span class="line-muted">«${esc(cmd)}» — не в емуляторі. Спробуй команду зліва або man/apropos.</span>
-    `, "warn");
+    printResult("Невідома команда", `<span class="line-muted">«${esc(cmd)}» — спробуй команду зліва або man/apropos</span>`, "warn");
   }
   return false;
 }
@@ -729,11 +691,10 @@ function execute(raw) {
   state.histIdx = state.history.length;
   beginView(cmd);
   const ok = handleCommand(cmd);
-  flushView(`% · ${getModule().title} · ${cmd}`);
+  flushView(`$ · ${getModule().title} · ${cmd}`);
   if (ok !== false) markTried(cmd);
 }
 
-// Test mode
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -765,8 +726,8 @@ function showTestQuestion() {
   if (!q) { finishTestMode(); return; }
   beginView(null);
   printResult(`Тест ${tm.index + 1}/${tm.queue.length}`, `
-    <div class="test-question">Яка команда: <em>${esc(q.hint)}</em>?</div>
-    <span class="line-muted">Введи команду і Enter. Правильно: ${tm.correct}, помилок: ${tm.wrong}</span>
+    <span class="line-muted">Яка команда: <em>${esc(q.hint)}</em>?</span><br>
+    ✓ ${tm.correct} · ✗ ${tm.wrong}
   `, "purple");
   flushView(`Тест · ${tm.index + 1}/${tm.queue.length}`);
 }
@@ -786,10 +747,7 @@ function stopTestMode() {
 function finishTestMode() {
   const tm = state.testMode;
   beginView(null);
-  printResult("Тест завершено", `
-    <span class="line-ok">Правильно: ${tm.correct}</span><br>
-    <span class="line-warn">Помилок: ${tm.wrong}</span>
-  `, "ok");
+  printResult("Тест завершено", `<span class="line-ok">✓ ${tm.correct}</span> · <span class="line-warn">✗ ${tm.wrong}</span>`, "ok");
   flushView("Тест завершено");
   state.testMode.active = false;
   updateTestButton();
@@ -798,29 +756,21 @@ function finishTestMode() {
 function handleTestAnswer(cmd) {
   const tm = state.testMode;
   const q = tm.queue[tm.index];
-  const norm = findListedCommand(cmd, [q.cmd]) || cmd;
   beginView(cmd);
-  if (norm === q.cmd || cmd.trim() === q.cmd) {
-    tm.correct++;
-    printResult("✓ Правильно!", `<span class="line-ok">${esc(q.cmd)}</span>`, "ok", q.hint);
-  } else {
-    tm.wrong++;
-    printResult("✗ Ні", `<span class="line-err">Очікувалось: ${esc(q.cmd)}</span>`, "warn", q.hint);
-  }
-  flushView(`Тест · ${tm.correct}✓ ${tm.wrong}✗`);
+  const match = findListedCommand(cmd, [q.cmd]) === q.cmd || cmd.trim() === q.cmd;
+  if (match) { tm.correct++; printResult("✓", `<span class="line-ok">${esc(q.cmd)}</span>`, "ok", q.hint); }
+  else { tm.wrong++; printResult("✗", `<span class="line-err">Очікувалось: ${esc(q.cmd)}</span>`, "warn", q.hint); }
+  flushView(`Тест · ${tm.correct}✓`);
   tm.index++;
-  setTimeout(() => { if (state.testMode.active) showTestQuestion(); }, 1200);
+  setTimeout(() => { if (state.testMode.active) showTestQuestion(); }, 1100);
 }
 
-// Scenario modal
 function openScenarioModal() {
   const list = document.getElementById("scenarioList");
   list.innerHTML = SCENARIOS.map(s => `
     <div class="scenario-item${s.moduleId === state.selectedScenario.moduleId ? " selected" : ""}" data-id="${s.id}">
-      <strong>${esc(s.title)}</strong>
-      <small>${esc(s.desc)} · ${s.commands} команд</small>
-    </div>
-  `).join("");
+      <strong>${esc(s.title)}</strong><small>${esc(s.desc)}</small>
+    </div>`).join("");
   list.querySelectorAll(".scenario-item").forEach(el => {
     el.addEventListener("click", () => {
       list.querySelectorAll(".scenario-item").forEach(x => x.classList.remove("selected"));
@@ -835,13 +785,9 @@ function closeScenarioModal() {
   document.getElementById("scenarioModal").classList.remove("open");
 }
 
-// Init
 document.getElementById("cmdForm").addEventListener("submit", e => {
-  e.preventDefault();
-  execute(cmdInput.value);
-  cmdInput.value = "";
+  e.preventDefault(); execute(cmdInput.value); cmdInput.value = "";
 });
-
 cmdInput.addEventListener("keydown", e => {
   if (e.key === "ArrowUp") {
     e.preventDefault();
@@ -852,16 +798,12 @@ cmdInput.addEventListener("keydown", e => {
     else { state.histIdx = state.history.length; cmdInput.value = ""; }
   } else if (e.key === "Tab") {
     e.preventDefault();
-    const cmds = getCurrentCommands();
     const val = cmdInput.value.trim();
-    const match = cmds.find(c => c.startsWith(val) && c !== val);
+    const match = getCurrentCommands().find(c => c.startsWith(val) && c !== val);
     if (match) cmdInput.value = match;
   }
 });
-
-document.getElementById("btnTest").addEventListener("click", () => {
-  state.testMode.active ? stopTestMode() : startTestMode();
-});
+document.getElementById("btnTest").addEventListener("click", () => state.testMode.active ? stopTestMode() : startTestMode());
 document.getElementById("btnScenario").addEventListener("click", openScenarioModal);
 document.getElementById("btnReset").addEventListener("click", () => { resetState(); welcome(); });
 document.getElementById("scenarioConfirm").addEventListener("click", () => {
@@ -869,12 +811,9 @@ document.getElementById("scenarioConfirm").addEventListener("click", () => {
   closeScenarioModal();
 });
 document.getElementById("scenarioCancel").addEventListener("click", closeScenarioModal);
-document.getElementById("scenarioModal").addEventListener("click", e => {
-  if (e.target.id === "scenarioModal") closeScenarioModal();
-});
+document.getElementById("scenarioModal").addEventListener("click", e => { if (e.target.id === "scenarioModal") closeScenarioModal(); });
 document.addEventListener("keydown", e => {
-  const modal = document.getElementById("scenarioModal");
-  if (!modal.classList.contains("open")) return;
+  if (!document.getElementById("scenarioModal").classList.contains("open")) return;
   if (e.key === "Escape") closeScenarioModal();
   if (e.key === "Enter") { switchModule(state.selectedScenario.moduleId); closeScenarioModal(); }
 });
