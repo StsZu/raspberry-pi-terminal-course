@@ -6,7 +6,7 @@
   <title>Raspberry Pi 5 — Уроки</title>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
-    :root { --bg: #181418; --panel: #221a20; --border: #342a32; --text: #ece6ea; --muted: #9a8d94; --raspberry: #b86b85; --cyan: #6eb8d4; }
+    :root { --bg: #181418; --panel: #221a20; --border: #342a32; --text: #ece6ea; --muted: #9a8d94; --raspberry: #b86b85; --cyan: #6eb8d4; --link: #8a9aad; --link-hover: #a8b4c4; }
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif; }
     .wrap { display: grid; grid-template-columns: 270px 1fr; min-height: 100vh; }
@@ -30,6 +30,8 @@
     #content table { border-collapse: collapse; width: 100%; margin: 1em 0; font-size: 0.88rem; }
     #content th, #content td { border: 1px solid var(--border); padding: 8px; text-align: left; }
     #content th { background: #352830; }
+    #content a { color: var(--link); text-decoration: none; border-bottom: 1px solid rgba(138,154,173,0.35); }
+    #content a:hover { color: var(--link-hover); border-bottom-color: rgba(168,180,196,0.55); }
     #loading { color: var(--muted); }
   </style>
 </head>
@@ -64,31 +66,82 @@
     </main>
   </div>
   <script>
+    const LESSON_DIR = "raspberry-pi-terminal-course/";
     const links = document.querySelectorAll(".lesson-link");
     const content = document.getElementById("content");
     const loading = document.getElementById("loading");
+    let currentFile = LESSON_DIR + "README.md";
+
+    function resolveHref(href, baseFile) {
+      if (!href || href.startsWith("#") || /^https?:/i.test(href)) return null;
+      const target = href.replace(/^\.\//, "");
+      if (target === "cheatsheet.md" || target.endsWith("/cheatsheet.md")) return { kind: "page", path: "cheatsheet.html" };
+      if (target === "index.html" || target === "../index.html") return { kind: "page", path: "index.html" };
+      if (!target.endsWith(".md")) return null;
+
+      const baseDir = baseFile.includes("/") ? baseFile.slice(0, baseFile.lastIndexOf("/") + 1) : "";
+      const parts = (baseDir + target).split("/");
+      const stack = [];
+      for (const part of parts) {
+        if (!part || part === ".") continue;
+        if (part === "..") stack.pop();
+        else stack.push(part);
+      }
+      return { kind: "lesson", path: stack.join("/") };
+    }
+
+    function setActiveLesson(file) {
+      links.forEach(link => link.classList.toggle("active", link.dataset.file === file));
+    }
+
+    function wireContentLinks() {
+      content.querySelectorAll("a[href]").forEach(anchor => {
+        const resolved = resolveHref(anchor.getAttribute("href"), currentFile);
+        if (!resolved) return;
+        if (resolved.kind === "page") {
+          anchor.setAttribute("href", resolved.path);
+          return;
+        }
+        anchor.setAttribute("href", "#");
+        anchor.addEventListener("click", e => {
+          e.preventDefault();
+          openLesson(resolved.path);
+        });
+      });
+    }
+
     async function loadLesson(file) {
+      currentFile = file;
       loading.style.display = "block";
+      loading.textContent = "Завантаження…";
       content.innerHTML = "";
       try {
         const res = await fetch(file);
         if (!res.ok) throw new Error(res.statusText);
         content.innerHTML = marked.parse(await res.text());
+        wireContentLinks();
         loading.style.display = "none";
         history.replaceState(null, "", `?lesson=${encodeURIComponent(file)}`);
-      } catch (e) { loading.textContent = "Помилка: " + e.message; }
+      } catch (e) {
+        loading.textContent = "Помилка: " + e.message;
+      }
     }
+
+    function openLesson(file) {
+      setActiveLesson(file);
+      loadLesson(file);
+    }
+
     links.forEach(link => {
       link.addEventListener("click", e => {
         e.preventDefault();
-        links.forEach(l => l.classList.remove("active"));
-        link.classList.add("active");
-        loadLesson(link.dataset.file);
+        openLesson(link.dataset.file);
       });
     });
-    const initial = new URLSearchParams(location.search).get("lesson") || "raspberry-pi-terminal-course/README.md";
+
+    const initial = new URLSearchParams(location.search).get("lesson") || LESSON_DIR + "README.md";
     const initLink = [...links].find(l => l.dataset.file === initial) || links[0];
-    links.forEach(l => l.classList.toggle("active", l === initLink));
+    setActiveLesson(initLink.dataset.file);
     loadLesson(initLink.dataset.file);
   </script>
 </body>
