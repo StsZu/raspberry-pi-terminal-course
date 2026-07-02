@@ -263,6 +263,7 @@ function beginView(cmd) {
   if (cmd != null) viewChunks.push(`<div class="line-user">${esc(promptLabel.textContent)} ${esc(cmd)}</div>`);
 }
 function ukHint(text) { return `<div class="line-uk-hint">${esc(text)}</div>`; }
+function print(html, cls = "line-sys") { viewChunks.push(`<div class="${cls}">${html}</div>`); }
 function printResult(title, body, type = "ok", hint = null) {
   const cls = type === "warn" ? "result-box warn" : type === "purple" ? "result-box purple" : type === "danger" ? "result-box danger" : "result-box";
   viewChunks.push(`<div class="${cls}"><div class="result-title">${esc(title)}</div>${body}${hint ? ukHint(hint) : ""}</div>`);

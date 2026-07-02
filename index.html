@@ -6,26 +6,26 @@
   <title>Raspberry Pi 5 Terminal Trainer</title>
   <style>
     :root {
-      --bg: #1a1218;
-      --panel: #261c24;
-      --border: #3d2f38;
-      --text: #f5eef2;
-      --muted: #a8949e;
-      --green: #3dd68c;
-      --cyan: #5ecfff;
-      --yellow: #ffd166;
-      --orange: #ff8c42;
-      --raspberry: #e30b5d;
-      --blue: #6b9fff;
-      --purple: #c77dff;
-      --red: #ff6b6b;
-      --prompt: #3dd68c;
+      --bg: #181418;
+      --panel: #221a20;
+      --border: #342a32;
+      --text: #ece6ea;
+      --muted: #9a8d94;
+      --green: #4db88a;
+      --cyan: #6eb8d4;
+      --yellow: #d4b86a;
+      --orange: #c09070;
+      --raspberry: #b86b85;
+      --blue: #7a9fd4;
+      --purple: #a88bc4;
+      --red: #c07878;
+      --prompt: #4db88a;
       --font: "SF Mono", "Menlo", "DejaVu Sans Mono", monospace;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0; min-height: 100vh;
-      background: radial-gradient(900px 500px at 85% -5%, #3d1028 0%, var(--bg) 55%);
+      background: radial-gradient(900px 500px at 85% -5%, #2a1a22 0%, var(--bg) 55%);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
     }
@@ -39,7 +39,7 @@
       padding: 6px 12px; border-radius: 8px; border: 1px solid transparent;
     }
     .top-nav a:hover { color: var(--text); background: #352830; }
-    .top-nav a.active { color: var(--raspberry); border-color: var(--raspberry); background: rgba(227,11,93,0.1); }
+    .top-nav a.active { color: var(--raspberry); border-color: var(--raspberry); background: rgba(184,107,133,0.12); }
     header { margin-bottom: 16px; }
     header h1 { font-size: 1.3rem; margin: 0 0 6px; font-weight: 600; }
     header h1 span { color: var(--raspberry); }
@@ -97,8 +97,8 @@
     }
     .dots { display: flex; gap: 6px; }
     .dots span { width: 12px; height: 12px; border-radius: 50%; }
-    .dots span:nth-child(1) { background: #ff5f57; }
-    .dots span:nth-child(2) { background: #febc2e; }
+    .dots span:nth-child(1) { background: #c4706a; }
+    .dots span:nth-child(2) { background: #c9a04a; }
     .dots span:nth-child(3) { background: #28c840; }
     .term-title { flex: 1; text-align: center; font-size: 0.76rem; color: var(--muted); font-family: var(--font); }
     .output { min-height: 400px; max-height: 58vh; overflow-y: auto; padding: 14px; font-family: var(--font); font-size: 0.81rem; line-height: 1.55; }
