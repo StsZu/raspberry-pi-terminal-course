@@ -61,7 +61,7 @@ window.CLI_COURSE.cheatsheet = {
     ] },
     { title: "Стан системи і процеси", rows: [
       { cmd: "uname -a", desc: "Ядро й архітектура (`aarch64`)", risk: "low" },
-      { cmd: "cat /etc/os-release", desc: "Версія ОС (Debian 12 Bookworm або новіша — залежить від образу)", risk: "low" },
+      { cmd: "cat /etc/os-release", desc: "Версія ОС: Debian 13 (trixie) — поточна Raspberry Pi OS; 12 (bookworm) — попередня", risk: "low" },
       { cmd: "uptime", desc: "Час роботи й навантаження", risk: "low" },
       { cmd: "vcgencmd measure_temp", desc: "Температура процесора", risk: "low" },
       { cmd: "vcgencmd get_throttled", desc: "`0x0` — без проблем; інше — були недостатнє живлення чи перегрів", risk: "low" },
@@ -77,7 +77,7 @@ window.CLI_COURSE.cheatsheet = {
     ] },
     { title: "Python і venv", rows: [
       { cmd: "python3 --version", desc: "Версія Python (залежить від версії ОС)", risk: "low" },
-      { cmd: "pip install requests (поза venv)", desc: "На Bookworm і новіших — помилка `externally-managed-environment`: системний Python захищено", risk: "low" },
+      { cmd: "pip install requests (поза venv)", desc: "У Trixie (як і з Bookworm) — помилка `externally-managed-environment`: системний Python захищено", risk: "low" },
       { cmd: "python3 -m venv .venv", desc: "Створити віртуальне середовище проєкту", risk: "medium" },
       { cmd: "source .venv/bin/activate", desc: "Увімкнути venv — запрошення починається з `(.venv)`", risk: "low" },
       { cmd: "pip install requests", desc: "Встановити бібліотеку всередині активного venv", risk: "medium" },
@@ -91,12 +91,12 @@ window.CLI_COURSE.cheatsheet = {
       { cmd: "gpiodetect", desc: "Список GPIO-чипів (libgpiod); номер чипа залежить від ядра", risk: "low" },
       { cmd: "gpioinfo", desc: "Лінії GPIO: назви, напрям, хто використовує", risk: "low" },
       { cmd: "ls /dev/gpiochip*", desc: "Пристрої GPIO у системі", risk: "low" },
-      { cmd: "gpioset -c gpiochip0 17=1", desc: "Подати 1 на лінію 17 (libgpiod v2; у v1 — `gpioset gpiochip0 17=1`). Лише з перевіреною схемою", risk: "medium" },
+      { cmd: "gpioset -c gpiochip0 17=1", desc: "Подати 1 на лінію 17 (libgpiod v2 — у Trixie; у v1 на Bookworm — `gpioset gpiochip0 17=1`). Лише з перевіреною схемою", risk: "high" },
       { cmd: "sudo apt install python3-gpiozero", desc: "gpiozero — рекомендована бібліотека; на Pi 5 RPi.GPIO не працює (чип RP1)", risk: "medium" }
     ] },
     { title: "systemd-сервіси", rows: [
       { cmd: "sudo nano /etc/systemd/system/my-service.service", desc: "Створити або змінити unit-файл", risk: "medium" },
-      { cmd: "sudo systemctl daemon-reload", desc: "Перечитати unit-файли після змін", risk: "low" },
+      { cmd: "sudo systemctl daemon-reload", desc: "Перечитати unit-файли після змін", risk: "medium" },
       { cmd: "systemctl status my-service", desc: "Стан, автозапуск (`enabled`), останні рядки логу", risk: "low" },
       { cmd: "sudo systemctl start my-service", desc: "Запустити зараз (автозапуск не змінює)", risk: "medium" },
       { cmd: "sudo systemctl stop my-service", desc: "Зупинити свій сервіс", risk: "medium" },
@@ -133,7 +133,7 @@ window.CLI_COURSE.cheatsheet = {
       { cmd: "sudo chown -R … /", desc: "Зміна власника системних файлів ламає сервіси", risk: "high" },
       { cmd: "curl -fsSL URL | bash", desc: "Виконує скрипт не читаючи; безпечніше: `-o install.sh` → `less` → `bash`", risk: "high" },
       { cmd: "lsblk", desc: "Диски й розділи — перша команда перед будь-якою роботою з дисками", risk: "low" },
-      { cmd: "Raspberry Pi Imager", desc: "Рекомендований Raspberry Pi спосіб записати образ ОС на SD/SSD (програма на Mac)", risk: "medium" },
+      { cmd: "Raspberry Pi Imager", desc: "Рекомендований Raspberry Pi спосіб записати образ ОС на SD/SSD (програма на Mac)", risk: "medium", outsideTrainer: true },
       { cmd: "sudo dd if=… of=/dev/…", desc: "Переписує весь пристрій; помилка в `of=` стирає інший диск", risk: "high" },
       { cmd: "sudo mkfs.ext4 /dev/sda1", desc: "Форматує розділ — усі дані зникають", risk: "high" },
       { cmd: "sudo fdisk /dev/sda", desc: "Змінює таблицю розділів", risk: "high" },

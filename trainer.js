@@ -203,7 +203,7 @@ const ALIASES = {
   "echo $SHELL": ["echo \"$SHELL\""],
   "echo $PATH": ["echo \"$PATH\""],
   "echo $PATH | tr ':' '\\n'": ["echo $PATH | tr \":\" \"\\n\"", "echo \"$PATH\" | tr ':' '\\n'"],
-  "which python3": [],
+  "which python3": ["command -v python3"],
   "ls -la": ["ls -al", "ls -l -a", "ls -a -l"],
   "head -5 log.txt": ["head -n 5 log.txt", "head -n5 log.txt"],
   "tail -5 log.txt": ["tail -n 5 log.txt", "tail -n5 log.txt"],
@@ -221,21 +221,27 @@ const ALIASES = {
   "sudo apt remove htop": ["sudo apt-get remove htop"],
   "sudo apt purge htop": ["sudo apt-get purge htop", "sudo apt remove --purge htop"],
   "ip addr": ["ip a", "ip address", "ip addr show"],
-  "ip route": ["ip r", "ip route show"],
+  "ip route": ["ip r", "ip route show", "ip r show"],
   "curl -I https://example.com": ["curl --head https://example.com"],
-  "ss -tulpn": ["ss -tlnpu", "ss -tunlp", "ss -lntup", "ss -plunt", "sudo ss -tulpn"],
+  "ss -tulpn": ["ss -tlnpu", "ss -tunlp", "ss -lntup", "ss -plunt", "sudo ss -tulpn", "sudo ss -tulnp", "sudo ss -ltnup", "sudo ss -lntup", "sudo ss -tlnp"],
   "nmcli device status": ["nmcli dev status", "nmcli d"],
   "du -sh ~/projects": ["du -sh /home/stanislav/projects", "du -sh ~/projects/"],
   "ps aux | grep python": ["ps aux | grep python3"],
-  "kill 1234": ["kill -15 1234", "kill -TERM 1234", "kill -SIGTERM 1234"],
+  "kill 1234": ["kill -15 1234", "kill -TERM 1234", "kill -SIGTERM 1234", "kill -s TERM 1234"],
+  "pgrep -f main.py": ["pgrep -f \"main.py\"", "pgrep -f 'main.py'"],
+  "pinctrl get 17": ["sudo pinctrl get 17"],
+  "gpiodetect": ["sudo gpiodetect"],
+  "python3 -m venv .venv": ["python3 -m venv .venv/", "python3 -m venv ./.venv"],
+  "cp main.py main.py.bak": ["cp ./main.py main.py.bak", "cp main.py ./main.py.bak", "cp ./main.py ./main.py.bak"],
+  "git pull": ["git pull origin main"],
   "kill -9 1234": ["kill -KILL 1234", "kill -SIGKILL 1234"],
   "python3 --version": ["python3 -V"],
-  "source .venv/bin/activate": [". .venv/bin/activate"],
+  "source .venv/bin/activate": [". .venv/bin/activate", "source ./.venv/bin/activate", ". ./.venv/bin/activate"],
   "pip install requests": ["pip3 install requests", "python -m pip install requests", "python3 -m pip install requests"],
   "pip3 install requests": ["pip install requests", "python3 -m pip install requests"],
   "ls /dev/gpiochip*": [],
-  "gpioset -c gpiochip0 17=1": ["gpioset gpiochip0 17=1"],
-  "sudo systemctl enable --now my-service": ["sudo systemctl enable my-service --now", "sudo systemctl enable --now my-service.service"],
+  "gpioset -c gpiochip0 17=1": [],
+  "sudo systemctl enable --now my-service": ["sudo systemctl enable my-service --now", "sudo systemctl enable --now my-service.service", "sudo systemctl --now enable my-service", "sudo systemctl --now enable my-service.service", "sudo systemctl enable my-service.service --now"],
   "systemctl status my-service": ["systemctl status my-service.service", "sudo systemctl status my-service"],
   "sudo systemctl start my-service": ["sudo systemctl start my-service.service"],
   "sudo systemctl stop my-service": ["sudo systemctl stop my-service.service"],
@@ -243,10 +249,10 @@ const ALIASES = {
   "sudo systemctl enable my-service": ["sudo systemctl enable my-service.service"],
   "sudo systemctl disable my-service": ["sudo systemctl disable my-service.service"],
   "journalctl -u my-service": ["journalctl -u my-service.service", "sudo journalctl -u my-service"],
-  "journalctl -u my-service -n 50": ["journalctl -u my-service -n50", "journalctl -n 50 -u my-service", "journalctl -u my-service --lines=50"],
-  "journalctl -u my-service -n 20": ["journalctl -u my-service -n20", "journalctl -n 20 -u my-service", "journalctl -u my-service --lines=20"],
+  "journalctl -u my-service -n 50": ["journalctl -u my-service -n50", "journalctl -n 50 -u my-service", "journalctl -u my-service --lines=50", "journalctl -u my-service.service -n 50", "journalctl -n 50 -u my-service.service", "sudo journalctl -u my-service -n 50"],
+  "journalctl -u my-service -n 20": ["journalctl -u my-service -n20", "journalctl -n 20 -u my-service", "journalctl -u my-service --lines=20", "journalctl -u my-service.service -n 20", "journalctl -u my-service --lines 20"],
   "journalctl -u my-service -f": ["journalctl -fu my-service", "journalctl -f -u my-service"],
-  "journalctl -u my-service | grep -i error": ["journalctl -u my-service | grep -i \"error\"", "journalctl -u my-service | grep -i 'error'"],
+  "journalctl -u my-service | grep -i error": ["journalctl -u my-service | grep -i \"error\"", "journalctl -u my-service | grep -i 'error'", "journalctl -u my-service.service | grep -i error", "journalctl -u my-service | grep error -i"],
   "sudo dmesg | tail -50": ["sudo dmesg | tail -n 50", "dmesg | tail -50", "dmesg | tail -n 50"],
   "git commit -m \"Update config\"": ["git commit -m 'Update config'"],
   "git add .": ["git add -A", "git add --all"],
@@ -255,15 +261,15 @@ const ALIASES = {
   "scp led-test/main.py stanislav@raspberrypi.local:~/projects/led-test/": R_LED.slice(1).map(r => "scp led-test/main.py " + r),
   "scp -r led-test stanislav@raspberrypi.local:~/projects/": R_PROJ.slice(1).map(r => "scp -r led-test " + r),
   "rsync -av ./led-test/ stanislav@raspberrypi.local:~/projects/led-test/": R_LED.slice(1).map(r => "rsync -av ./led-test/ " + r)
-    .concat(R_LED.map(r => "rsync -av led-test/ " + r)),
+    .concat(R_LED.map(r => "rsync -av led-test/ " + r), R_LED.map(r => "rsync -va ./led-test/ " + r), R_LED.map(r => "rsync -va led-test/ " + r)),
   "rsync -av --dry-run ./led-test/ stanislav@raspberrypi.local:~/projects/led-test/": R_LED.slice(1).map(r => "rsync -av --dry-run ./led-test/ " + r)
     .concat(R_LED.map(r => "rsync -avn ./led-test/ " + r), R_LED.map(r => "rsync -av -n ./led-test/ " + r), R_LED.map(r => "rsync -av --dry-run led-test/ " + r)),
   "ssh-copy-id stanislav@raspberrypi.local": ["ssh-copy-id stanislav@10.0.0.50"],
   "sudo dd if=raspios.img of=/dev/sda bs=4M status=progress": ["sudo dd if=raspios.img of=/dev/sda bs=4M"],
-  "sudo shutdown -r +5": ["sudo shutdown -r 5"],
+  "sudo shutdown -r +5": ["sudo shutdown -r 5", "sudo shutdown --reboot +5"],
   "sudo shutdown -h now": ["sudo poweroff", "sudo shutdown now"],
   "sudo reboot": ["sudo shutdown -r now"],
-  "curl -fsSL https://example.com/install.sh -o install.sh": ["curl -fsSL -o install.sh https://example.com/install.sh", "curl -fsSLo install.sh https://example.com/install.sh"],
+  "curl -fsSL https://example.com/install.sh -o install.sh": ["curl -fsSL -o install.sh https://example.com/install.sh", "curl -fsSLo install.sh https://example.com/install.sh", "curl -fsSL https://example.com/install.sh --output install.sh", "curl -fsSL --output install.sh https://example.com/install.sh"],
   "curl -fsSL https://example.com/install.sh | bash": ["curl -fsSL https://example.com/install.sh | sudo bash", "curl -fsSL https://example.com/install.sh | sh"]
 };
 
@@ -290,14 +296,49 @@ function allCommands() {
   MODULE_LIST.forEach(m => m.commands.forEach(c => { if (!seen.has(c[0])) { seen.add(c[0]); out.push(c[0]); } }));
   return out;
 }
-window.TRAINER = { commands: allCommands, matches: matches };
+/* Сухий прогін для recognizes(): емуляція без DOM і без збереження змін стану. */
+let DRY = false, UNKNOWN = false;
+function unknownCmd() { UNKNOWN = true; return false; }
+function cloneSim(src) {
+  const fsCopy = f => f && { dirs: new Set(f.dirs), files: new Map(f.files) };
+  return {
+    host: src.host, piOn: src.piOn, cwd: { mac: src.cwd.mac, pi: src.cwd.pi }, fs: { mac: fsCopy(src.fs.mac), pi: fsCopy(src.fs.pi) },
+    venv: src.venv, venvCreated: src.venvCreated, requests: src.requests, htop: src.htop, htopConf: src.htopConf,
+    svc: src.svc && Object.assign({}, src.svc), piKey: src.piKey, shutdownPlanned: src.shutdownPlanned,
+    repos: Object.fromEntries(Object.entries(src.repos).map(([k, g]) => [k, Object.assign({}, g, { modified: new Set(g.modified), staged: new Set(g.staged), commits: g.commits.slice(), orig: Object.assign({}, g.orig) })]))
+  };
+}
+// true — емулятор дає змістовну відповідь (зокрема помилку чи попередження, як справжній інструмент) хоча б в одному контексті:
+// поточному, на Pi (~/projects/led-test, ~, ~/projects, клонований weather-station) або на Mac. false — «невідома / не емулюється».
+// Та сама гілка розбору, що й під час виконання (handleCommand), але на копії стану і без DOM.
+function recognizes(cmd) {
+  const c = normalizeCommand(cmd);
+  if (!c) return false;
+  const saved = cloneSim(SIM), savedView = viewChunks;
+  const ctxs = [[SIM.host, SIM.cwd[SIM.host]], ["pi", LED], ["pi", PI_HOME], ["pi", PROJ], ["pi", PROJ + "/weather-station"], ["mac", MAC_HOME]];
+  DRY = true;
+  try {
+    for (const [host, cwd] of ctxs) {
+      Object.assign(SIM, cloneSim(saved));
+      if (cwd === PROJ + "/weather-station" && !SIM.repos[cwd]) seedRepo(cwd);
+      SIM.host = host; SIM.cwd[host] = cwd;
+      viewChunks = []; UNKNOWN = false;
+      handleCommand(c);
+      if (!UNKNOWN) return true;
+    }
+    return false;
+  } finally {
+    Object.assign(SIM, saved); viewChunks = savedView; DRY = false; UNKNOWN = false;
+  }
+}
+window.TRAINER = { commands: allCommands, matches: matches, recognizes: recognizes };
 
 /* ---------- стан емулятора ---------- */
 const SIM = {
   host: "mac", piOn: true, cwd: { mac: MAC_HOME, pi: PI_HOME },
   fs: { mac: null, pi: null },
   venv: false, venvCreated: false, requests: false, htop: false, htopConf: false,
-  svc: null, git: null, piKey: false, shutdownPlanned: false
+  svc: null, repos: {}, piKey: false, shutdownPlanned: false
 };
 
 function makeFS(dirs, files) { return { dirs: new Set(dirs), files: new Map(files) }; }
@@ -306,7 +347,7 @@ const LOG_LINES = ["[INFO] led-test started", "[INFO] GPIO17 -> LED on", "[INFO]
 const BLINK = "from gpiozero import LED\nfrom time import sleep\n\nled = LED(17)  # BCM 17 = фізичний контакт 11\n\nwhile True:\n    led.on()\n    sleep(1)\n    led.off()\n    sleep(1)\n";
 const UNIT = "[Unit]\nDescription=LED test service\nAfter=network.target\n\n[Service]\nUser=stanislav\nWorkingDirectory=/home/stanislav/projects/led-test\nExecStart=/home/stanislav/projects/led-test/.venv/bin/python main.py\nRestart=always\n\n[Install]\nWantedBy=multi-user.target\n";
 function initFS() {
-  SIM.fs.pi = makeFS(["/", "/home", PI_HOME, PROJ, LED, LED + "/folder", LED + "/empty", LED + "/build", "/etc", "/etc/systemd", "/etc/systemd/system",
+  SIM.fs.pi = makeFS(["/", "/home", PI_HOME, PROJ, LED, LED + "/folder", LED + "/empty", LED + "/build", PROJ + "/python-test", "/etc", "/etc/systemd", "/etc/systemd/system",
     "/var", "/var/log", "/dev", "/usr", "/usr/bin", "/tmp", "/boot", "/boot/firmware"], [
     [PI_HOME + "/.bashrc", "# ~/.bashrc: executed by bash for non-login shells.\n"],
     [LED + "/main.py", "print(\"Hello from Raspberry Pi 5\")\n"],
@@ -316,8 +357,9 @@ function initFS() {
     [LED + "/file.txt", "тимчасовий файл\n"],
     [LED + "/folder/a.txt", "a\n"], [LED + "/folder/b.txt", "b\n"],
     [LED + "/build/firmware.bin", "(binary)\n"],
+    [PROJ + "/python-test/main.py", "import requests\nprint(requests.__version__)\n"],
     ["/etc/hostname", "raspberrypi\n"],
-    ["/etc/os-release", "PRETTY_NAME=\"Debian GNU/Linux 12 (bookworm)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"12\"\nVERSION=\"12 (bookworm)\"\nVERSION_CODENAME=bookworm\nID=debian\n"],
+    ["/etc/os-release", "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nID=debian\n"],
     ["/etc/systemd/system/my-service.service", UNIT]
   ]);
   SIM.fs.mac = makeFS(["/", "/Users", MAC_HOME, MAC_HOME + "/.ssh", MAC_HOME + "/led-test", MAC_HOME + "/Desktop"], [
@@ -329,7 +371,8 @@ function initFS() {
   SIM.host = "mac"; SIM.piOn = true;
   SIM.venv = false; SIM.venvCreated = false; SIM.requests = false; SIM.htop = false; SIM.htopConf = false;
   SIM.svc = { enabled: false, active: false, needReload: false };
-  SIM.git = null; SIM.piKey = false; SIM.shutdownPlanned = false;
+  SIM.repos = {}; SIM.piKey = false; SIM.shutdownPlanned = false;
+  seedRepo(LED);
 }
 
 const F = () => SIM.fs[SIM.host];
@@ -431,9 +474,10 @@ function flushView(status, replace) {
 }
 
 function updatePrompt() {
+  if (DRY) return;
   let label, title;
   if (SIM.host === "pi") {
-    label = `${SIM.venv ? "(.venv) " : ""}stanislav@raspberrypi:${tilde(CWD())} $`;
+    label = `${SIM.venv ? "(" + baseOf(SIM.venv) + ") " : ""}stanislav@raspberrypi:${tilde(CWD())} $`;
     title = `stanislav@raspberrypi — bash (SSH з Mac) — ${CWD()}`;
   } else {
     const c = CWD();
@@ -511,6 +555,7 @@ function switchModule(id, showWelcome = true) {
 }
 
 function welcome() {
+  if (DRY) return;
   beginView(null);
   print(`<span class="line-muted">Raspberry Pi 5 Terminal Trainer — емуляція без реального виконання</span>`);
   printResult("Почни з розділу «SSH і перший вхід»", `
@@ -552,7 +597,7 @@ const PI_PATHS = { python3: "/usr/bin/python3", git: "/usr/bin/git", bash: "/usr
   systemctl: "/usr/bin/systemctl", journalctl: "/usr/bin/journalctl", curl: "/usr/bin/curl", ssh: "/usr/bin/ssh", apt: "/usr/bin/apt", nmcli: "/usr/bin/nmcli" };
 function piWhich(tool) {
   if (tool === "htop") return SIM.htop ? "/usr/bin/htop" : null;
-  if ((tool === "python3" || tool === "python" || tool === "pip" || tool === "pip3") && SIM.venv) return LED + "/.venv/bin/" + tool;
+  if ((tool === "python3" || tool === "python" || tool === "pip" || tool === "pip3") && SIM.venv) return SIM.venv + "/bin/" + tool;
   if (tool === "pip" || tool === "pip3") return "/usr/bin/" + tool;
   return PI_PATHS[tool] || null;
 }
@@ -576,7 +621,7 @@ function runMac(raw) {
       if (m[1] !== "stanislav") return H(raw, out(`${m[1]}@${m[2]}: Permission denied (publickey,password).`, "line-err"), "warn", "На цій Pi користувач — stanislav. Username не обов'язково pi."), false;
       SIM.host = "pi"; SIM.cwd.pi = PI_HOME; SIM.venv = false; updatePrompt();
       return H(raw, out([SIM.piKey ? "(вхід за SSH-ключем — пароль не питали)" : `${m[1]}@${m[2]}'s password: (введено)`,
-        "Linux raspberrypi 6.6.51+rpt-rpi-2712 #1 SMP PREEMPT Debian aarch64", "Last login: Thu Sep 17 21:04:11 2026 from 10.0.0.42"]), "ok",
+        "Linux raspberrypi 6.18.34+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.18.34-1+rpt1 (2026-06-09) aarch64", "Last login: Thu Sep 17 21:04:11 2026 from 10.0.0.42"]), "ok",
         hint || "Тепер команди виконуються на Pi — дивись на запрошення.");
     }
     case "exit": printResult(raw, out("(ти вже на Mac, SSH-сесії немає; у справжньому Terminal exit закрив би вікно)", "line-muted"), "warn", "exit повертає з Pi на Mac лише всередині SSH-сесії."); return false;
@@ -612,11 +657,12 @@ function runMac(raw) {
   }
   const piCmd = PI_ONLY.has(name) || /^(vcgencmd|pinout|gpio)/.test(name) || /^(python3|pip3?|git|journalctl|nano|tail|head|less|touch|mkdir|rm|cp|mv|uptime|df|du|uname|top|ps|kill|echo|which|man|apropos|history|curl)$/.test(name);
   if (piCmd) {
+    UNKNOWN = true;
     printResult("Ти на Mac, а не на Pi", `${out(`zsh: ${PI_ONLY.has(name) || /^(vcgencmd|pinout|gpio)/.test(name) ? "command not found: " + name : "(у цьому тренажері Mac знає лише ping, ssh, scp, rsync, ls, cd, cat)"}`, "line-err")}<span class="line-muted">Команди для Pi виконуй після <span class="line-cmd">ssh stanislav@${PI_IP}</span> — запрошення має стати <span class="line-hl">stanislav@raspberrypi:~ $</span>.</span>`, "warn");
     return false;
   }
   printResult("Невідома команда", `${out(`zsh: command not found: ${name}`, "line-err")}<span class="line-muted">Тренажер не знає «${esc(raw)}». Спробуй команду зі списку зліва.</span>`, "warn");
-  return false;
+  return unknownCmd();
 }
 
 function doPing(raw, args, hint, from) {
@@ -627,15 +673,21 @@ function doPing(raw, args, hint, from) {
   const known = { "raspberrypi.local": PI_IP, "10.0.0.50": PI_IP, "10.0.0.254": ROUTER, "8.8.8.8": "8.8.8.8", "google.com": "142.250.186.78" };
   if (!known[host]) { printResult(raw, out(`ping: cannot resolve ${host || "(порожньо)"}: Unknown host`, "line-err"), "warn", "Тренажер знає raspberrypi.local, 10.0.0.50, 10.0.0.254, 8.8.8.8 і google.com."); return false; }
   const ip = known[host];
-  if (ip === PI_IP && !SIM.piOn) return H(out(`PING ${host} (${ip}): 56 data bytes\nRequest timeout for icmp_seq 0\nRequest timeout for icmp_seq 1\nRequest timeout for icmp_seq 2`, "line-err"), "warn", "Pi вимкнена — пакети не повертаються.");
+  // Формат виводу: на Mac — BSD ping (icmp_seq з 0), на Pi — iputils ping (icmp_seq з 1, rtt … mdev).
+  const mac = from === "mac";
+  const local = ip === PI_IP || ip === ROUTER;
+  const t = local ? ["2.1", "1.8", "1.9"] : ["14.2", "13.8", "14.0"];
+  const ttl = local ? 64 : 117;
+  const head = mac ? `PING ${host} (${ip}): 56 data bytes` : `PING ${host} (${ip}) 56(84) bytes of data.`;
+  const reply = (x, i) => mac ? `64 bytes from ${ip}: icmp_seq=${i} ttl=${ttl} time=${x} ms` : `64 bytes from ${host === ip ? ip : host + " (" + ip + ")"}: icmp_seq=${i + 1} ttl=${ttl} time=${x} ms`;
+  if (ip === PI_IP && !SIM.piOn) return H(out(mac ? `${head}\nRequest timeout for icmp_seq 0\nRequest timeout for icmp_seq 1\nRequest timeout for icmp_seq 2` : `${head}\n\n--- ${host} ping statistics ---\n3 packets transmitted, 0 received, 100% packet loss, time 2045ms`, "line-err"), "warn", "Pi вимкнена — пакети не повертаються.");
   if (!count) {
-    printResult(raw, out(`PING ${host} (${ip}): 56 data bytes\n64 bytes from ${ip}: icmp_seq=0 ttl=64 time=2.0 ms\n64 bytes from ${ip}: icmp_seq=1 ttl=64 time=1.9 ms\n… (без -c ping не зупиняється сам — у справжньому терміналі натисни Ctrl+C)`, "line-warn"), "warn", "Додай -c 3, щоб надіслати рівно 3 пакети.");
-    return false;
+    printResult(raw, out(`${head}\n${reply("2.0", 0)}\n${reply("1.9", 1)}\n… (без -c ping не зупиняється сам — у справжньому терміналі натисни Ctrl+C)`, "line-warn"), "warn", "Додай -c 3, щоб надіслати рівно 3 пакети.");
+    return true;
   }
-  const t = ip === PI_IP || ip === ROUTER ? ["2.1", "1.8", "1.9"] : ["14.2", "13.8", "14.0"];
-  const lines = [`PING ${host} (${ip}) 56(84) bytes of data.`].concat(t.map((x, i) => `64 bytes from ${ip}: icmp_seq=${i + 1} ttl=${ip === PI_IP || ip === ROUTER ? 64 : 117} time=${x} ms`),
-    ["", `--- ${host} ping statistics ---`, "3 packets transmitted, 3 received, 0% packet loss"]);
-  if (from === "mac") lines[0] = `PING ${host} (${ip}): 56 data bytes`;
+  const lines = [head].concat(t.map(reply), ["", `--- ${host} ping statistics ---`],
+    mac ? ["3 packets transmitted, 3 packets received, 0.0% packet loss", local ? "round-trip min/avg/max/stddev = 1.800/1.933/2.100/0.125 ms" : "round-trip min/avg/max/stddev = 13.800/14.000/14.200/0.163 ms"]
+        : ["3 packets transmitted, 3 received, 0% packet loss, time 2003ms", local ? "rtt min/avg/max/mdev = 1.800/1.933/2.100/0.125 ms" : "rtt min/avg/max/mdev = 13.800/14.000/14.200/0.163 ms"]);
   return H(out(lines));
 }
 
@@ -676,10 +728,13 @@ function macTransfer(raw, name, args, flags, rest, hint) {
   const changed = files.filter(f => pi.files.get(base + f.slice(src.length)) !== SIM.fs.mac.files.get(f));
   changed.forEach(f => copyFile(f, base + f.slice(src.length)));
   if (!dryRun) { let p = base; while (!pi.dirs.has(p)) { pi.dirs.add(p); p = parentOf(p); } }
-  const lines = [dryRun ? "sending incremental file list (DRY RUN — нічого не змінено)" : "sending incremental file list"]
-    .concat(changed.length ? changed.map(f => f.slice(src.length + 1)) : ["(змін немає — нічого не передано)"],
-      ["", `sent ${changed.length * 180 + 120} bytes  received 35 bytes`, dryRun ? "total size is 312  speedup is 1.00 (DRY RUN)" : "total size is 312  speedup is 1.52"]);
-  return H(out(lines), "ok", hint || (trailing ? "Слеш у кінці джерела: копіюється вміст папки." : "Без слеша: на Pi з'явиться вкладена папка led-test/led-test."));
+  // rsync у macOS 15+ — це openrsync: вивід починається з «Transfer starting: N files» (N — усі записи списку, разом із папкою).
+  const deleting = args.includes("--delete") ? [...pi.files.keys()].filter(f => f.startsWith(base + "/") && !SIM.fs.mac.files.has(src + f.slice(base.length))).map(f => "deleting " + f.slice(base.length + 1)) : [];
+  if (!dryRun) deleting.forEach(l => pi.files.delete(base + "/" + l.slice(9)));
+  const lines = [`Transfer starting: ${files.length + 1} files`].concat(deleting, changed.map(f => f.slice(src.length + 1)),
+      ["", `sent ${changed.length * 180 + 120} bytes  received ${changed.length * 20 + 35} bytes  ${changed.length * 9000 + 1500} bytes/sec`, `total size is 312  speedup is ${changed.length ? "0.52" : "2.07"}`]);
+  const note = (dryRun ? "--dry-run: нічого не передано й не видалено — це лише список. " : "") + (changed.length || deleting.length ? "" : "Список файлів порожній — змін немає. ") + (deleting.length ? (dryRun ? "Рядки deleting … — те, що --delete стер би на Pi. " : "--delete стер ці файли на Pi — без кошика. ") : "");
+  return H(out(lines), deleting.length && !dryRun ? "danger" : "ok", note + (hint || (trailing ? "Слеш у кінці джерела: копіюється вміст папки." : "Без слеша: на Pi з'явиться вкладена папка led-test/led-test.")) + " Формат виводу — openrsync (macOS 15+); rsync з Homebrew пише «sending incremental file list».");
 }
 
 /* ---------- Pi (bash) ---------- */
@@ -701,13 +756,14 @@ function runPi(raw) {
     if (canon === "ps aux | grep python") return H(raw, out(["USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND",
       "stanislav        1234  2.1  0.4  32412 18220 ?        Ss   09:12   0:41 /home/stanislav/projects/led-test/.venv/bin/python main.py",
       "stanislav        2211  0.0  0.0   6180  1960 pts/0    S+   09:31   0:00 grep --color=auto python"]), "ok", hint || "Останній рядок — сам grep, його ігноруй.");
-    if (canon === "journalctl -u my-service | grep -i error") return H(raw, out(["Sep 18 09:12:44 raspberrypi python[1234]: [ERROR] sensor timeout", "Sep 18 09:12:44 raspberrypi python[1234]: TimeoutError: sensor did not answer in 2 s"]));
+    if (/^(sudo )?journalctl (-u my-service(\.service)?|--unit=my-service(\.service)?)( --no-pager)? \| grep (-i ["']?error["']?|["']?error["']? -i|-i -e ["']?error["']?)$/.test(normalizeCommand(raw))) return H(raw, out(["Sep 18 09:12:44 raspberrypi python[1234]: [ERROR] sensor timeout", "Sep 18 09:12:44 raspberrypi python[1234]: TimeoutError: sensor did not answer in 2 s"]));
+    if (/^(sudo )?journalctl -u my-service(\.service)? \| grep ["']?error["']?$/.test(normalizeCommand(raw))) return H(raw, out("(без -i grep шукає лише «error» малими літерами — рядок «[ERROR] sensor timeout» не знайдено)", "line-muted"), "warn", "Додай -i: grep -i error ігнорує регістр.");
     if (canon === "sudo dmesg | tail -50") {
       if (!/^sudo /.test(raw)) return H(raw, out(["dmesg: read kernel buffer failed: Operation not permitted", "(залежить від налаштувань системи: якщо читання журналу ядра обмежене — потрібен sudo)"], "line-warn"), "warn");
       return H(raw, out(["[    2.114011] rp1-firmware: RP1 firmware version …", "[    3.402356] brcmfmac: wlan0: Firmware: BCM4345/6", "[    5.873120] usb 3-1: new high-speed USB device number 2 using xhci-hcd",
         "[    5.901237] usb-storage 3-1:1.0: USB Mass Storage device detected", "[    6.920004] sd 0:0:0:0: [sda] 30031872 512-byte logical blocks: (15.4 GB/14.3 GiB)", "[   12.114578] wlan0: associated"]));
     }
-    return H("Конвеєр не емулюється", `<span class="line-muted">Тренажер знає лише конвеєри з розділів. Спробуй команду зі списку зліва.</span>`, "warn"), false;
+    return H("Конвеєр не емулюється", `<span class="line-muted">Тренажер знає лише конвеєри з розділів. Спробуй команду зі списку зліва.</span>`, "warn"), unknownCmd();
   }
 
   let t = tokenize(raw);
@@ -715,16 +771,16 @@ function runPi(raw) {
   if (sudo) t = t.slice(1);
   const name = t[0], args = t.slice(1);
   const { flags, rest } = splitFlags(args);
-  if (sudo && !name) return H(raw, out("usage: sudo команда", "line-muted")), false;
+  if (sudo && (!name || name === "…" || name === "...")) return H(raw, out(["usage: sudo command", "(sudo виконує наступну команду від імені root — наприклад sudo apt update)"], "line-muted"), "ok", "sudo — лише для apt, systemctl, файлів у /etc і лише коли розумієш решту команди."), false;
 
   switch (name) {
     case "exit": {
       SIM.host = "mac"; SIM.venv = false; updatePrompt();
       return H(raw, out(["logout", "Connection to raspberrypi.local closed."]), "ok", hint || "Ти знову на Mac — запрошення закінчується на %.");
     }
-    case "ssh": return H(raw, out("(ти вже на Pi — вкладена SSH-сесія не потрібна; щоб повернутися на Mac, введи exit)", "line-warn"), "warn"), false;
+    case "ssh": return H(raw, out("(ти вже на Pi — вкладена SSH-сесія не потрібна; щоб повернутися на Mac, введи exit)", "line-warn"), "warn"), unknownCmd();
     case "scp": case "rsync": case "ssh-copy-id":
-      return H(raw, out(`(${name} для передачі Mac → Pi запускають на Mac. Спершу exit, потім команда на Mac.)`, "line-warn"), "warn"), false;
+      return H(raw, out(`(${name} для передачі Mac → Pi запускають на Mac. Спершу exit, потім команда на Mac.)`, "line-warn"), "warn"), unknownCmd();
     case "echo": {
       const v = args.join(" ");
       const map = { "$SHELL": "/bin/bash", "$HOME": PI_HOME, "$PATH": piPath(), "$USER": "stanislav" };
@@ -741,7 +797,7 @@ function runPi(raw) {
     case "apropos": return H(raw, out(["ip (8)               - show / manipulate routing, network devices, interfaces and tunnels", "nmcli (1)            - command-line tool for controlling NetworkManager", "ping (8)             - send ICMP ECHO_REQUEST to network hosts", "ss (8)               - another utility to investigate sockets"]));
     case "ls": {
       if (args[0] === "--help") return H(raw, out(["Usage: ls [OPTION]... [FILE]...", "List information about the FILEs (the current directory by default).", "  -a, --all                  do not ignore entries starting with .", "  -h, --human-readable       with -l, print sizes like 1K 234M 2G", "  -l                         use a long listing format"]));
-      if (rest[0] === "/dev/gpiochip*") return H(raw, out("/dev/gpiochip0  /dev/gpiochip10  /dev/gpiochip11  /dev/gpiochip12  /dev/gpiochip13  /dev/gpiochip4"), "ok", hint || "Номери чіпів залежать від версії ядра.");
+      if (rest[0] === "/dev/gpiochip*") return H(raw, out("/dev/gpiochip0  /dev/gpiochip10  /dev/gpiochip11  /dev/gpiochip12  /dev/gpiochip13"), "ok", hint || "Номери чипів залежать від версії ядра; у Trixie контакти гребінки — gpiochip0.");
       const target = rest[0] ? resolvePath(rest[0]) : CWD();
       if (!exists(target)) return H(raw, notFound("ls", rest[0]), "warn"), false;
       if (isFile(target)) return H(raw, out(rest[0]));
@@ -778,12 +834,17 @@ function runPi(raw) {
       if (!isDir(parentOf(abs))) return H(raw, out(`[ Directory '${parentOf(abs)}' does not exist ]`, "line-err"), "warn"), false;
       if (abs === "/etc/systemd/system/my-service.service") {
         SIM.svc.needReload = true;
-        return H(raw, out(`  GNU nano 7.2        ${abs}\n\n${UNIT}\n^O Write Out   ^X Exit   (зміни збережено)`), "ok", "Після зміни unit-файлу обов'язково: sudo systemctl daemon-reload");
+        return H(raw, out(`  GNU nano 8.4        ${abs}\n\n${UNIT}\n^O Write Out   ^X Exit   (зміни збережено)`), "ok", "Після зміни unit-файлу обов'язково: sudo systemctl daemon-reload");
       }
       if (!isFile(abs)) F().files.set(abs, "");
-      if (SIM.git && abs.startsWith(SIM.git.root + "/")) SIM.git.modified.add(abs.slice(SIM.git.root.length + 1));
-      if (SIM.git && abs.startsWith(SIM.git.root + "/")) F().files.set(abs, "CITY = \"Kyiv\"\nINTERVAL = 300\n");
-      return H(raw, out(`  GNU nano 7.2        ${rest[0]}\n\n${F().files.get(abs) || ""}\n^O Write Out (Ctrl+O, Enter)   ^X Exit (Ctrl+X)   (емуляція: файл збережено)`));
+      const rg = SIM.host === "pi" && repoOf(abs);
+      if (rg) {
+        const rel = abs.slice(rg.root.length + 1);
+        if (!(rel in rg.orig)) rg.orig[rel] = F().files.get(abs);
+        F().files.set(abs, rel === "config.py" ? "CITY = \"Kyiv\"\nINTERVAL = 300\n" : rg.orig[rel] + "# змінено в nano\n");
+        rg.modified.add(rel);
+      }
+      return H(raw, out(`  GNU nano 8.4        ${rest[0]}\n\n${F().files.get(abs) || ""}\n^O Write Out (Ctrl+O, Enter)   ^X Exit (Ctrl+X)   (емуляція: файл збережено)`));
     }
     case "cat": case "less": {
       const n = rest[0];
@@ -832,6 +893,9 @@ function runPi(raw) {
       const outl = []; let removed = 0;
       for (const n of rest) {
         const abs = resolvePath(n);
+        if (abs === "/" && recursive && !args.includes("--no-preserve-root")) {
+          return H(raw, out(["rm: it is dangerous to operate recursively on '/'", "rm: use --no-preserve-root to override this failsafe"], "line-err") + `<span class="line-muted">GNU rm сам не видаляє корінь — захист --preserve-root. Але решта аргументів команди видаляється, і від rm -rf ~/ (уся домашня папка) чи /* такого захисту немає.</span>`, "danger");
+        }
         if (abs === "/" || abs === PI_HOME || abs === "/home" || abs === PROJ || n === "*" || abs.startsWith("/etc") || abs.startsWith("/usr") || abs.startsWith("/boot")) {
           return H(raw, `<span class="line-err">⛔ Тренажер відмовився: ${esc(n)} — це ${abs === PI_HOME ? "вся домашня папка" : "системна папка або все підряд"}.</span><br><span class="line-muted">На справжній Pi це знищило б дані або систему безповоротно. Перед видаленням: pwd і ls; замість rm -rf — rm -ri або перейменування в _old.</span>`, "danger");
         }
@@ -852,6 +916,15 @@ function runPi(raw) {
       if (children(abs).length) return H(raw, out(`rmdir: failed to remove '${n}': Directory not empty`, "line-err"), "warn", "rmdir видаляє лише порожні папки — тому він безпечніший за rm -r."), false;
       F().dirs.delete(abs);
       return H(raw, out("(порожню папку видалено)", "line-muted"));
+    }
+    case "bash": case "sh": {
+      const f = rest[0];
+      if (!f) break;
+      const abs = resolvePath(f);
+      if (!isFile(abs)) return H(raw, out(`${name}: ${f}: No such file or directory`, "line-err"), "warn", "Спершу завантаж скрипт у файл: curl -fsSL URL -o install.sh"), false;
+      if (baseOf(abs) !== "install.sh") return H(raw, out(`(тренажер не виконує ${f})`, "line-muted"), "warn"), false;
+      return H(raw, out(["Installing demo-tool…", "[sudo] password for stanislav: (введено)", "(скрипт виконав sudo apt install -y demo-tool — те, що ти прочитав у less install.sh)"], "line-warn"), "warn",
+        "Скрипт виконується з твоїми правами, а все з sudo всередині — від root. Запускай лише після less install.sh і лише з джерела, якому довіряєш.");
     }
     case "chmod": case "chown":
       if (flags.has("R") || /777/.test(raw)) return H(raw, `<span class="line-err">⛔ Тренажер не виконує ${esc(raw)}.</span><br><span class="line-muted">Рекурсивна зміна прав або 777 відкриває файли всім чи ламає систему. Змінюй права одного конкретного файлу: chmod +x script.sh.</span>`, "danger");
@@ -879,13 +952,16 @@ function runPi(raw) {
       if (flags.has("I") || args.includes("--head")) return H(raw, out(["HTTP/2 200", "content-type: text/html", "server: ECAcc (dcd/7D5A)", "content-length: 1256"]), "ok", hint || "200 — сайт відповів; мережа і DNS працюють.");
       return H(raw, out("<!doctype html>\n<html>…<title>Example Domain</title>…</html>"));
     }
-    case "ss": return H(raw, out(["Netid State  Recv-Q Send-Q Local Address:Port Peer Address:Port Process", "udp   UNCONN 0      0            0.0.0.0:5353      0.0.0.0:*",
-      "tcp   LISTEN 0      128          0.0.0.0:22        0.0.0.0:*", "tcp   LISTEN 0      128             [::]:22           [::]:*",
-      "(імена процесів чужих користувачів видно лише з sudo)"]), "ok", hint || ":22 — SSH-сервер слухає. Якби його тут не було, ssh з Mac отримав би Connection refused.");
+    case "ss": {
+      const pr = (p) => sudo ? " " + p : "";
+      return H(raw, out(["Netid State  Recv-Q Send-Q Local Address:Port Peer Address:Port Process", "udp   UNCONN 0      0            0.0.0.0:5353      0.0.0.0:*" + pr('users:(("avahi-daemon",pid=498,fd=12))'),
+        "tcp   LISTEN 0      128          0.0.0.0:22        0.0.0.0:*" + pr('users:(("sshd",pid=701,fd=6))'), "tcp   LISTEN 0      128             [::]:22           [::]:*" + pr('users:(("sshd",pid=701,fd=7))')]
+        .concat(sudo ? [] : ["(стовпець Process порожній: процеси, що належать root, видно лише з sudo — sudo ss -tulpn)"])), "ok", hint || ":22 — SSH-сервер слухає. Якби його тут не було, ssh з Mac отримав би Connection refused.");
+    }
     case "nmcli": return H(raw, out(["DEVICE         TYPE      STATE                   CONNECTION", "wlan0          wifi      connected               Home-WiFi",
       "eth0           ethernet  unavailable             --", "lo             loopback  connected (externally)  lo"]));
     case "rfkill": return H(raw, out(["ID TYPE      DEVICE    SOFT      HARD", " 0 bluetooth hci0   unblocked unblocked", " 1 wlan      phy0   unblocked unblocked"]), "ok", hint || "blocked у SOFT — Wi-Fi вимкнено програмно (sudo rfkill unblock wifi).");
-    case "uname": return H(raw, out("Linux raspberrypi 6.6.51+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.6.51-1+rpt3 aarch64 GNU/Linux"), "ok", hint || "aarch64 — 64-бітна ARM-система; версія ядра залежить від оновлень.");
+    case "uname": return H(raw, out(args.includes("-r") ? "6.18.34+rpt-rpi-2712" : "Linux raspberrypi 6.18.34+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.18.34-1+rpt1 (2026-06-09) aarch64 GNU/Linux"), "ok", hint || "aarch64 — 64-бітна ARM-система. Ядро 6.18 — з образом Raspberry Pi OS Trixie від 2026-06-18; точний номер змінюється з оновленнями.");
     case "uptime": return H(raw, out(" 09:31:07 up 2 days,  3:15,  1 user,  load average: 0.12, 0.08, 0.05"));
     case "vcgencmd": {
       if (args[0] === "measure_temp") return H(raw, out("temp=47.8'C"), "ok", hint || "До ~60 °C під навантаженням — норма. Близько 80 °C і вище Pi почне скидати частоту.");
@@ -915,10 +991,11 @@ function runPi(raw) {
     case "python3": case "python": return piPython(raw, args, hint);
     case "pip": case "pip3": return piPip(raw, canon, args, hint);
     case "source": case ".": {
-      if (args[0] !== ".venv/bin/activate") break;
-      if (!isFile(resolvePath(".venv/bin/activate"))) return H(raw, out("-bash: .venv/bin/activate: No such file or directory", "line-err"), "warn", "Спершу створи venv: python3 -m venv .venv (у папці проєкту)."), false;
-      SIM.venv = true; updatePrompt();
-      return H(raw, out("(venv активовано — запрошення почалося з (.venv))", "line-muted"));
+      if (!args[0] || !/(^|\/)bin\/activate$/.test(args[0])) break;
+      const act = resolvePath(args[0]);
+      if (!isFile(act)) return H(raw, out(`-bash: ${args[0]}: No such file or directory`, "line-err"), "warn", "Спершу створи venv: python3 -m venv .venv (у папці проєкту)."), false;
+      SIM.venv = parentOf(parentOf(act)); updatePrompt();
+      return H(raw, out(`(venv активовано — запрошення почалося з (${baseOf(SIM.venv)}))`, "line-muted"));
     }
     case "deactivate":
       if (!SIM.venv) return H(raw, out("-bash: deactivate: command not found", "line-err"), "warn", "deactivate існує лише всередині активного venv."), false;
@@ -930,12 +1007,15 @@ function runPi(raw) {
       if (args[0] === "set") return H(raw, out("(pinctrl set змінює стан контакту — лише для діагностики і лише з перевіреною схемою)", "line-warn"), "warn");
       break;
     }
-    case "gpiodetect": return H(raw, out(["gpiochip0 [gpio-brcmstb@107d508500] (32 lines)", "gpiochip1 [gpio-brcmstb@107d508520] (4 lines)", "gpiochip4 [pinctrl-rp1] (54 lines)"]), "ok",
-      hint || "Номери й назви чіпів залежать від версії ядра: на новіших ядрах RP1 (контакти 40-pin) — gpiochip0, на старіших — gpiochip4.");
-    case "gpioinfo": return H(raw, out(["gpiochip4 - 54 lines:", "\tline   0:     \"ID_SDA\"       unused   input  active-high", "\tline   2:      \"GPIO2\"       unused   input  active-high", "\tline  17:     \"GPIO17\"       unused   input  active-high", "\tline  18:     \"GPIO18\"       unused   input  active-high", "\t…"]), "ok",
-      hint || "Кожен рядок — лінія GPIO: назва, хто її зайняв (unused — вільна), напрям. Формат виводу залежить від версії libgpiod.");
-    case "gpioset": return H(raw, out(["(лінію 17 встановлено в 1 — світлодіод через резистор засвітився)", "(у libgpiod v2 gpioset тримає лінію, доки не натиснеш Ctrl+C)"], "line-warn"), "warn",
-      "Синтаксис залежить від версії libgpiod: v1 — gpioset gpiochip0 17=1, v2 — gpioset -c gpiochip0 17=1. Номер чипа залежить від версії ядра. Для програм краще gpiozero.");
+    case "gpiodetect": return H(raw, out(["gpiochip0 [pinctrl-rp1] (54 lines)", "gpiochip10 [gpio-brcmstb@107d508500] (32 lines)", "gpiochip11 [gpio-brcmstb@107d508520] (4 lines)", "gpiochip12 [gpio-brcmstb@107d517c00] (17 lines)", "gpiochip13 [gpio-brcmstb@107d517c20] (6 lines)"]), "ok",
+      hint || "Номер чипа RP1 (контакти 40-pin) залежить від ядра: у Trixie (ядро 6.18) і на ядрах Bookworm від 6.6.45 — gpiochip0, на ранніх образах для Pi 5 — gpiochip4.");
+    case "gpioinfo": return H(raw, out(["gpiochip0 - 54 lines:", "\tline   0:\t\"ID_SDA\"         \tinput", "\tline   2:\t\"GPIO2\"          \tinput", "\tline  17:\t\"GPIO17\"         \tinput", "\tline  18:\t\"GPIO18\"         \tinput", "\t…"]), "ok",
+      hint || "Кожен рядок — лінія GPIO: номер, назва, напрям; якщо лінію зайняла програма — ще й consumer. Формат libgpiod v2 (Trixie); у v1 (Bookworm) він інший.");
+    case "gpioset": {
+      if (args[0] !== "-c") return H(raw, out(["(помилка: у libgpiod v2 gpioset приймає лише пари лінія=значення, а чип вказують через -c — точний текст помилки залежить від версії)"], "line-err"), "warn", "Це синтаксис libgpiod v1 (Bookworm). У Trixie — libgpiod v2: gpioset -c gpiochip0 17=1"), false;
+      return H(raw, out(["(лінію 17 встановлено в 1 — світлодіод через резистор засвітився)", "(у libgpiod v2 gpioset тримає лінію, доки не натиснеш Ctrl+C)"], "line-warn"), "warn",
+        "У Trixie — libgpiod v2: gpioset -c gpiochip0 17=1 (у v1 на Bookworm — gpioset gpiochip0 17=1). Номер чипа перевір gpiodetect. Для програм краще gpiozero.");
+    }
     case "systemctl": return piSystemctl(raw, sudo, args, hint);
     case "journalctl": return piJournal(raw, args, hint);
     case "dmesg": return H(raw, out(["dmesg: read kernel buffer failed: Operation not permitted", "(залежить від налаштувань системи; з sudo спрацює)"], "line-warn"), "warn"), false;
@@ -949,53 +1029,85 @@ function runPi(raw) {
       return H(raw, `<span class="line-err">⛔ Тренажер не виконує ${esc(name)}.</span><br><span class="line-muted">Форматування або зміна розділів знищує всі дані на розділі. Спершу lsblk: переконайся, що це флешка (sda), а не системна SD-карта (mmcblk0), і що важливе скопійовано.</span>`, "danger");
     }
   }
-  if (sudo && !name) return false;
+  if (sudo && !name) return unknownCmd();
   const knownElsewhere = allCommands().find(c => c.split(" ")[0] === name || (c.startsWith("sudo ") && c.split(" ")[1] === name));
   printResult("Невідома команда", `${out(`-bash: ${name}: command not found`, "line-err")}<span class="line-muted">Тренажер не знає «${esc(raw)}»${knownElsewhere ? ` у такому вигляді. Спробуй точну команду зі списку, напр. «${esc(knownElsewhere)}»` : ". Спробуй команду зі списку зліва або man/apropos"}.</span>`, "warn");
-  return false;
+  return unknownCmd();
 }
 
-function piPath() { return (SIM.venv ? LED + "/.venv/bin:" : "") + "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"; }
+function piPath() { return (SIM.venv ? SIM.venv + "/bin:" : "") + "/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games"; }
 
+// Невелика база пакетів Raspberry Pi OS Trixie (версії — з архівів Debian 13 і archive.raspberrypi.com).
+const APT_DB = {
+  "htop": ["3.4.1-5", "arm64", "interactive processes viewer"],
+  "git": ["1:2.47.3-0+deb13u1", "arm64", "fast, scalable, distributed revision control system"],
+  "gpiod": ["2.2.1-2+deb13u1", "arm64", "Tools for interacting with Linux GPIO character device - binary"],
+  "python3-gpiozero": ["2.0.1-0+rpt1+trixie", "all", "Simple API for controlling devices attached to a Pi's GPIO pins"],
+  "python3-libgpiod": ["2.2.1-2+deb13u1", "arm64", "Python bindings for libgpiod (Python 3)"],
+  "python3-lgpio": ["0.2.2-1~rpt1+trixie", "arm64", "Control GPIO pins via gpiochip devices - python3 bindings"],
+  "python3-requests": ["2.32.3+dfsg-5+deb13u1", "all", "elegant and simple HTTP library for Python3, built for human beings"],
+  "nano": ["8.4-1+deb13u1", "arm64", "small, friendly text editor inspired by Pico"]
+};
+const APT_INSTALLED = ["bash/stable,now 5.2.37-2 arm64 [installed]", "git/stable,now 1:2.47.3-0+deb13u1 arm64 [installed]", "nano/stable,now 8.4-1+deb13u1 arm64 [installed]", "python3/stable,now 3.13.5-1 arm64 [installed]", "python3-gpiozero/stable,now 2.0.1-0+rpt1+trixie all [installed]"];
 function piApt(raw, sudo, args, hint) {
   const H = (body, type = "ok", h = hint) => { printResult(raw, body, type, h); return true; };
   const sub = args[0], pkg = args.filter(a => !a.startsWith("-"))[1];
   const needsRoot = ["update", "upgrade", "full-upgrade", "install", "remove", "purge", "autoremove"].includes(sub);
-  if (needsRoot && !sudo) { printResult(raw, out(["E: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)", "E: Unable to acquire the dpkg frontend lock, are you root?"], "line-err"), "warn", "Встановлення й оновлення змінюють систему — потрібен sudo."); return false; }
+  if (needsRoot && !sudo) { printResult(raw, out(["Error: Could not open lock file /var/lib/dpkg/lock-frontend - open (13: Permission denied)", "Error: Unable to acquire the dpkg frontend lock (/var/lib/dpkg/lock-frontend), are you root?"], "line-err"), "warn", "Встановлення й оновлення змінюють систему — потрібен sudo."); return false; }
+  const summary = (up, inst, rm, notUp) => ["", "Summary:", `  Upgrading: ${up}, Installing: ${inst}, Removing: ${rm}, Not Upgrading: ${notUp}`, "", "Continue? [Y/n] Y"];
+  const isPlaceholder = p => /^(пакет|package|<.*>|…|\.\.\.)$/.test(p || "");
   switch (sub) {
-    case "update": return H(out(["Hit:1 http://deb.debian.org/debian bookworm InRelease", "Hit:2 http://archive.raspberrypi.com/debian bookworm InRelease", "Reading package lists... Done", "Building dependency tree... Done", "3 packages can be upgraded. Run 'apt list --upgradable' to see them."]),
-      "ok", hint || "update лише оновлює списки — нічого не встановлює. Назва випуску (bookworm) залежить від версії ОС.");
-    case "upgrade": case "full-upgrade": return H(out(["Reading package lists... Done", "Calculating upgrade... Done", "The following packages will be upgraded:", "  libcamera0.2 raspi-firmware rpi-eeprom", "3 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.", "Do you want to continue? [Y/n] Y", "…", "Setting up rpi-eeprom … done"]), "warn",
+    case "update": return H(out(["Hit:1 http://deb.debian.org/debian trixie InRelease", "Hit:2 http://deb.debian.org/debian trixie-updates InRelease", "Hit:3 http://deb.debian.org/debian-security trixie-security InRelease", "Hit:4 http://archive.raspberrypi.com/debian trixie InRelease", "Reading package lists... Done", "Building dependency tree... Done", "Reading state information... Done", "3 packages can be upgraded. Run 'apt list --upgradable' to see them."]),
+      "ok", hint || "update лише оновлює списки — нічого не встановлює. trixie — Raspberry Pi OS на Debian 13; джерела описано у /etc/apt/sources.list.d/*.sources (deb822).");
+    case "upgrade": case "full-upgrade": return H(out(["Reading package lists... Done", "Building dependency tree... Done", "Calculating upgrade... Done", "Upgrading:", "  libcamera0.5  raspi-firmware  rpi-eeprom"].concat(summary(3, 0, 0, 0), ["…", "Setting up rpi-eeprom (28.31-1) ..."])), "warn",
       sub === "full-upgrade" ? "full-upgrade може видаляти й замінювати пакети заради залежностей — читай список перед Y." : "upgrade змінює систему: перед ним — update, після оновлення ядра/прошивки — перезавантаження.");
+    case "autoremove": return H(out(["Reading package lists... Done", "Building dependency tree... Done", "REMOVING:", "  linux-image-6.18.29+rpt-rpi-2712  linux-image-6.18.29+rpt-rpi-v8"].concat(summary(0, 0, 2, 3), ["Removing linux-image-6.18.29+rpt-rpi-2712 (1:6.18.29-1+rpt1) ..."])), "warn",
+      "autoremove прибирає автоматично встановлені залежності, які вже нікому не потрібні (тут — старі ядра). Перед Y переглянь список REMOVING.");
     case "install": {
       if (!pkg) break;
-      if (pkg === "htop") { if (SIM.htop) return H(out("htop is already the newest version (3.2.2-2).")); SIM.htop = true; SIM.htopConf = true; }
+      if (!APT_DB[pkg]) { printResult(raw, out(`Error: Unable to locate package ${pkg}`, "line-err"), "warn", isPlaceholder(pkg) ? "Підстав справжню назву пакета, напр. sudo apt install htop." : "Невірна назва або застарілі списки — спершу sudo apt update, потім apt search."); return false; }
+      if (pkg === "htop" && SIM.htop || pkg === "git" || pkg === "nano" || pkg === "python3-gpiozero") return H(out([`${pkg} is already the newest version (${APT_DB[pkg][0]}).`, "Summary:", "  Upgrading: 0, Installing: 0, Removing: 0, Not Upgrading: 3"]), "ok", hint || "Пакет уже встановлено — apt нічого не змінив.");
+      if (pkg === "htop") { SIM.htop = true; SIM.htopConf = true; }
       if (pkg === "python3-requests") SIM.requests = true;
-      if (!["htop", "python3-requests", "git", "gpiod", "python3-gpiozero"].includes(pkg)) { printResult(raw, out(`E: Unable to locate package ${pkg}`, "line-err"), "warn", "Невірна назва або застарілі списки — спершу sudo apt update, потім apt search."); return false; }
-      return H(out(["Reading package lists... Done", `The following NEW packages will be installed:\n  ${pkg}`, "0 upgraded, 1 newly installed, 0 to remove and 3 not upgraded.", `Setting up ${pkg} … done`]), "ok");
+      return H(out(["Reading package lists... Done", "Installing:", `  ${pkg}`].concat(summary(0, 1, 0, 3), [`Setting up ${pkg} (${APT_DB[pkg][0]}) ...`])), "ok");
     }
     case "remove": case "purge": {
-      if (pkg !== "htop") break;
+      if (!pkg) break;
+      if (isPlaceholder(pkg) || !APT_DB[pkg]) { printResult(raw, out(`Error: Unable to locate package ${pkg}`, "line-err"), "warn", "Підстав справжню назву пакета, напр. sudo apt remove htop."); return false; }
+      if (pkg !== "htop") return H(out(["REMOVING:", `  ${pkg}${sub === "purge" ? "*" : ""}`, "", "(тренажер зупинився перед Y: цей пакет потрібен системі чи курсу — видаляй лише те, що сам ставив)"], "line-warn"), "warn");
       if (!SIM.htop && !(sub === "purge" && SIM.htopConf)) return H(out(`Package 'htop' is not installed, so not removed`), "ok");
       SIM.htop = false; if (sub === "purge") SIM.htopConf = false;
-      return H(out(["The following packages will be REMOVED:", `  htop${sub === "purge" ? "*" : ""}`, "Do you want to continue? [Y/n] Y", `Removing htop …${sub === "purge" ? "\nPurging configuration files for htop …" : ""}`]), "warn",
+      return H(out(["REMOVING:", `  htop${sub === "purge" ? "*" : ""}`].concat(summary(0, 0, 1, 3), [`Removing htop (3.4.1-5) ...${sub === "purge" ? "\nPurging configuration files for htop (3.4.1-5) ..." : ""}`])), "warn",
         sub === "purge" ? "purge видаляє ще й конфіги — налаштування програми зникнуть." : "remove лишає файли налаштувань — повторне встановлення їх підхопить.");
     }
-    case "search": return H(out(["Sorting... Done", "Full Text Search... Done", "htop/stable 3.2.2-2 arm64", "  interactive processes viewer"]));
-    case "show": return H(out(["Package: " + (pkg || "htop"), "Version: 3.2.2-2", "Section: utils", "Description: interactive processes viewer"]));
-    case "list": if (args.includes("--installed")) return H(out(["Listing... Done", "bash/stable,now 5.2.15-2+b7 arm64 [installed]", "git/stable,now 1:2.39.5-0+deb12u1 arm64 [installed]", SIM.htop ? "htop/stable,now 3.2.2-2 arm64 [installed]" : "nano/stable,now 7.2-1 arm64 [installed]", "python3/stable,now 3.11.2-1+b1 arm64 [installed]", "…"])); break;
+    case "search": {
+      const term = (pkg || "").toLowerCase();
+      if (!term) break;
+      const hits = Object.keys(APT_DB).filter(n => n.includes(term) || APT_DB[n][2].toLowerCase().includes(term));
+      return H(out(["Sorting... Done", "Full Text Search... Done"].concat(hits.length ? [].concat(...hits.map(n => [`${n}/stable ${APT_DB[n][0]} ${APT_DB[n][1]}`, `  ${APT_DB[n][2]}`, ""])) : ["(нічого не знайдено — у тренажері невелика база пакетів)"])), "ok", hint || "apt search шукає слово в назві й описі пакета.");
+    }
+    case "show": {
+      const n = pkg || "";
+      if (!APT_DB[n]) { printResult(raw, out(`Error: No packages found`, "line-err"), "warn"); return false; }
+      return H(out(["Package: " + n, "Version: " + APT_DB[n][0], "Architecture: " + APT_DB[n][1], "Description: " + APT_DB[n][2]]));
+    }
+    case "list": if (args.includes("--installed")) return H(out(["Listing... Done"].concat(APT_INSTALLED, SIM.htop ? ["htop/stable,now 3.4.1-5 arm64 [installed]"] : [], ["…"]))); break;
   }
   printResult("Невідома команда", out(`(тренажер не знає «${raw}»)`, "line-muted"), "warn");
-  return false;
+  return unknownCmd();
 }
 
 function piPython(raw, args, hint) {
   const H = (body, type = "ok", h = hint) => { printResult(raw, body, type, h); return true; };
-  if (args[0] === "--version" || args[0] === "-V") return H(out(`Python 3.11.2`), "ok", hint || "Версія залежить від випуску Raspberry Pi OS.");
-  if (args[0] === "-m" && args[1] === "venv" && args[2] === ".venv") {
-    const base = resolvePath(".venv");
+  if (args[0] === "--version" || args[0] === "-V") return H(out(`Python 3.13.5`), "ok", hint || "Python 3.13 — у Raspberry Pi OS Trixie (Debian 13); у попередній Bookworm був 3.11.");
+  if (args[0] === "-m" && args[1] === "venv") {
+    const opts = args.slice(2).filter(a => a.startsWith("-")), dirs = args.slice(2).filter(a => !a.startsWith("-"));
+    const bad = opts.find(o => o !== "--system-site-packages" && o !== "--clear" && o !== "--upgrade-deps");
+    if (bad || dirs.length !== 1) { printResult(raw, out(bad ? `usage: venv [-h] [--system-site-packages] [--symlinks | --copies] [--clear] …\nvenv: error: unrecognized arguments: ${bad}` : "usage: venv [-h] [--system-site-packages] … ENV_DIR [ENV_DIR ...]\nvenv: error: the following arguments are required: ENV_DIR", "line-err"), "warn", "Формат: python3 -m venv .venv"); return false; }
+    const base = resolvePath(dirs[0]).replace(/\/$/, "");
     mkdirp(base + "/bin"); F().files.set(base + "/bin/activate", "# activate\n"); SIM.venvCreated = true;
-    return H(out("(у поточній папці створено .venv — окреме середовище для бібліотек цього проєкту)", "line-muted"));
+    const sys = opts.includes("--system-site-packages");
+    return H(out(`(створено ${tilde(base)} — окреме середовище для бібліотек цього проєкту${sys ? "; воно бачить і системні пакети, напр. gpiozero" : ""})`, "line-muted"));
   }
   if (args[0] === "-m" && args[1] === "pip") return piPip(raw, raw, args.slice(1), hint);
   if (args[0] === "main.py" || args[0] === "blink.py") {
@@ -1004,17 +1116,21 @@ function piPython(raw, args, hint) {
     if (args[0] === "blink.py") return H(out(["(GPIO17 блимає раз на секунду; Ctrl+C — зупинити)", "^C"]), "ok", "gpiozero на Pi 5 працює через бекенд lgpio; стара бібліотека RPi.GPIO на Pi 5 не працює (новий чип вводу-виводу RP1).");
     return H(out(fileLines(abs).map(l => { const m = l.match(/^print\("(.*)"\)$/); return m ? m[1] : l; })));
   }
-  if (!args.length) return H(out(["Python 3.11.2 (main, …) [GCC 12.2.0] on linux", ">>> (інтерактивний режим; вихід — exit() або Ctrl+D)"]));
+  if (!args.length) return H(out(["Python 3.13.5 (main, …) [GCC 14.2.0] on linux", ">>> (інтерактивний режим; вихід — exit() або Ctrl+D)"]));
   printResult(raw, out("(тренажер знає python3 --version, python3 -m venv .venv, python3 main.py, python3 blink.py)", "line-muted"), "warn");
-  return false;
+  return unknownCmd();
 }
 
 function piPip(raw, canon, args, hint) {
   const sub = args[0], pkg = args[1];
-  if (sub !== "install" || !pkg) { printResult(raw, out("(тренажер знає лише pip install <пакет>)", "line-muted"), "warn"); return false; }
+  if (sub !== "install" || !pkg) { printResult(raw, out("(тренажер знає лише pip install <пакет>)", "line-muted"), "warn"); return unknownCmd(); }
+  if (!SIM.venv && args.includes("--break-system-packages")) {
+    printResult(raw, `<span class="line-err">⛔ Тренажер не виконує ${esc(raw)}.</span><br><span class="line-muted">--break-system-packages знімає захист PEP 668: pip запише бібліотеки в системний Python, і оновлення apt чи інша версія пакета можуть зламати програми ОС. Безпечно: python3 -m venv .venv → source .venv/bin/activate → pip install … або sudo apt install python3-&lt;пакет&gt;.</span>`, "danger");
+    return false;
+  }
   if (!SIM.venv) {
     printResult(raw, out(["error: externally-managed-environment", "", "× This environment is externally managed", "╰─> To install Python packages system-wide, try apt install", "    python3-xyz, where xyz is the package you are trying to", "    install.", "", "    If you wish to install a non-Debian-packaged Python package,", "    create a virtual environment using python3 -m venv path/to/venv.", "", "note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages."], "line-err"),
-      "warn", "Raspberry Pi OS (Bookworm і новіші) блокує pip поза venv, щоб не зламати системний Python. Рішення: python3 -m venv .venv → source .venv/bin/activate → pip install … Або apt install python3-<пакет>.");
+      "warn", "Raspberry Pi OS Trixie (як і з Bookworm) блокує pip поза venv (PEP 668), щоб не зламати системний Python. Рішення: python3 -m venv .venv → source .venv/bin/activate → pip install … Або apt install python3-<пакет>.");
     return canon === "pip3 install requests" && state.currentModule === "python" ? true : false;
   }
   if (args.includes("--break-system-packages")) { printResult(raw, out("(у venv цей прапорець не потрібен)", "line-muted"), "warn"); return false; }
@@ -1024,8 +1140,9 @@ function piPip(raw, canon, args, hint) {
 function piSystemctl(raw, sudo, args, hint) {
   const H = (body, type = "ok", h = hint) => { printResult(raw, body, type, h); return true; };
   const s = SIM.svc;
-  const sub = args[0];
-  const unitArg = args.filter(a => !a.startsWith("-"))[1] || "";
+  const pos = args.filter(a => !a.startsWith("-"));
+  const sub = pos[0];
+  const unitArg = pos[1] || "";
   const unit = unitArg.replace(/\.service$/, "");
   if (sub === "daemon-reload") {
     if (!sudo) { printResult(raw, out("Failed to reload daemon: Access denied", "line-err"), "warn", "Потрібен sudo."); return false; }
@@ -1066,7 +1183,7 @@ function piSystemctl(raw, sudo, args, hint) {
     case "stop": s.active = false; return H(out(`(сервіс зупинено; автозапуск ${s.enabled ? "лишився увімкненим — після reboot він стартує знову" : "вимкнено"})`, "line-muted"), "warn");
   }
   printResult(raw, out("(тренажер знає status, start, stop, restart, enable, enable --now, disable, is-enabled, daemon-reload)", "line-muted"), "warn");
-  return false;
+  return unknownCmd();
 }
 
 function piJournal(raw, args, hint) {
@@ -1081,7 +1198,7 @@ function piJournal(raw, args, hint) {
     "Sep 18 09:12:49 raspberrypi systemd[1]: my-service.service: Scheduled restart job, restart counter is at 1.",
     "Sep 18 09:12:50 raspberrypi python[1301]: [INFO] led-test started"];
   if (args.includes("-u") || args.includes("-fu")) {
-    const nIdx = args.indexOf("-n");
+    const nIdx = args.findIndex(a => a === "-n" || a === "--lines");
     const n = nIdx >= 0 ? +args[nIdx + 1] : (args.find(a => /^-n\d+$|^--lines=/.test(a)) || "").replace(/\D/g, "") || null;
     if (args.includes("-f") || args.includes("-fu")) return H(out(svc.slice(-4).concat(["… (стежу за новими рядками; Ctrl+C — вийти, сервіс працює далі)"])));
     return H(out(["-- Logs begin at Wed 2026-09-16 06:11:58 EEST. --"].concat(n ? svc.slice(-Math.min(+n, svc.length)) : svc)), "ok", hint || "Шукай Traceback і рядок під ним — там причина.");
@@ -1092,21 +1209,36 @@ function piJournal(raw, args, hint) {
   return H(out(svc));
 }
 
+function seedRepo(root) {
+  const pi = SIM.fs.pi, name = root.slice(root.lastIndexOf("/") + 1);
+  let p = root; while (!pi.dirs.has(p)) { pi.dirs.add(p); p = p.slice(0, p.lastIndexOf("/")) || "/"; }
+  pi.dirs.add(root + "/.git");
+  if (name === "weather-station") { pi.files.set(root + "/config.py", "CITY = \"Kyiv\"\nINTERVAL = 600\n"); pi.files.set(root + "/main.py", "print(\"weather\")\n"); pi.files.set(root + "/README.md", "# weather-station\n"); }
+  else if (!pi.files.has(root + "/main.py")) pi.files.set(root + "/main.py", "print(\"Hello from Raspberry Pi 5\")\n");
+  SIM.repos[root] = { root, modified: new Set(), staged: new Set(), ahead: 0, orig: {},
+    commits: name === "weather-station" ? ["9f1c2ab Add sensor reading", "4d7e0f1 Initial commit"] : ["3f9c2e1 Add blink delay", "a1b2c3d Initial commit"] };
+}
+function repoOf(abs) { return Object.values(SIM.repos).find(g => abs === g.root || abs.startsWith(g.root + "/")) || null; }
 function piGit(raw, args, hint) {
   const H = (body, type = "ok", h = hint) => { printResult(raw, body, type, h); return true; };
   const sub = args[0];
-  if (sub === "--version") return H(out("git version 2.39.5"), "ok", hint || "Версія залежить від випуску ОС. Немає git — sudo apt install git.");
+  if (sub === "--version") return H(out("git version 2.47.3"), "ok", hint || "Git 2.47 — у Raspberry Pi OS Trixie; версія залежить від випуску ОС. Немає git — sudo apt install git.");
   if (sub === "clone") {
     const url = args[1] || "";
-    if (!/^https:\/\/github\.com\/stanislav\/weather-station(\.git)?$/.test(url)) { printResult(raw, out(`fatal: repository '${url}' not found`, "line-err"), "warn"); return false; }
-    const root = CWD() + "/weather-station";
-    if (exists(root)) { printResult(raw, out("fatal: destination path 'weather-station' already exists and is not an empty directory.", "line-err"), "warn", "Репозиторій уже клоновано — перейди в нього: cd weather-station"); return false; }
-    mkdirp(root + "/.git"); F().files.set(root + "/config.py", "CITY = \"Kyiv\"\nINTERVAL = 600\n"); F().files.set(root + "/main.py", "print(\"weather\")\n"); F().files.set(root + "/README.md", "# weather-station\n");
-    SIM.git = { root, modified: new Set(), staged: new Set(), ahead: 0, commits: ["9f1c2ab Add sensor reading", "4d7e0f1 Initial commit"] };
+    const um = url.match(/^https:\/\/github\.com\/stas\/(weather-station|led-test)(\.git)?$/);
+    if (!um) { printResult(raw, out([`remote: Repository not found.`, `fatal: repository '${url}' not found`], "line-err"), "warn", "Тренажер знає https://github.com/stas/weather-station.git і https://github.com/stas/led-test.git"); return false; }
+    const root = CWD() + "/" + um[1];
+    if (exists(root)) { printResult(raw, out(`fatal: destination path '${um[1]}' already exists and is not an empty directory.`, "line-err"), "warn", `Папка ${um[1]} тут уже є — клонуй в іншу папку (напр. cd ~/projects після видалення старої копії) або перейди в неї: cd ${um[1]}`); return false; }
+    seedRepo(root);
     return H(out(["Cloning into 'weather-station'...", "remote: Enumerating objects: 24, done.", "Receiving objects: 100% (24/24), 6.10 KiB | 1.5 MiB/s, done."]));
   }
-  const g = SIM.git;
-  if (!g || !(CWD() === g.root || CWD().startsWith(g.root + "/"))) { printResult(raw, out("fatal: not a git repository (or any of the parent directories): .git", "line-err"), "warn", "Спершу git clone … і cd weather-station."); return false; }
+  if (!["status", "diff", "restore", "add", "commit", "push", "pull", "log"].includes(sub)) {
+    printResult(raw, out(sub ? `git: '${sub}' is not a git command. See 'git --help'.` : "usage: git [-v | --version] [-h | --help] <command> [<args>]", "line-err"), "warn", "Тренажер емулює git clone, status, diff, add, commit, push, pull, log, restore і git --version.");
+    return unknownCmd();
+  }
+  const g = repoOf(CWD());
+  if (!g) { printResult(raw, out("fatal: not a git repository (or any of the parent directories): .git", "line-err"), "warn", "Тут немає репозиторію. У тренажері репозиторії — ~/projects/led-test і (після git clone у ~/projects) ~/projects/weather-station: спершу cd у папку проєкту."); return false; }
+  const rel = f => resolvePath(f).slice(g.root.length + 1);
   switch (sub) {
     case "status": {
       const l = ["On branch main", g.ahead ? `Your branch is ahead of 'origin/main' by ${g.ahead} commit.` : "Your branch is up to date with 'origin/main'.", ""];
@@ -1115,28 +1247,40 @@ function piGit(raw, args, hint) {
       if (!g.staged.size && !g.modified.size) l.push("nothing to commit, working tree clean");
       return H(out(l));
     }
-    case "diff": return H(g.modified.size ? out(["diff --git a/config.py b/config.py", "--- a/config.py", "+++ b/config.py", "@@ -1,2 +1,2 @@", " CITY = \"Kyiv\"", "-INTERVAL = 600", "+INTERVAL = 300"]) : out("(змін немає — порожній вивід)", "line-muted"));
+    case "diff": {
+      if (!g.modified.size) return H(out("(змін немає — порожній вивід)", "line-muted"));
+      const d = [];
+      g.modified.forEach(f => {
+        const a = (g.orig[f] || "").replace(/\n$/, "").split("\n"), b = fileLines(g.root + "/" + f);
+        d.push(`diff --git a/${f} b/${f}`, `--- a/${f}`, `+++ b/${f}`, `@@ -1,${a.length} +1,${b.length} @@`);
+        a.forEach(l => d.push((b.includes(l) ? " " : "-") + l)); b.forEach(l => { if (!a.includes(l)) d.push("+" + l); });
+      });
+      return H(out(d));
+    }
     case "restore": {
-      const f = args[1];
+      const f = args[1] === "--staged" ? args[2] : args[1];
       if (!f || !isFile(resolvePath(f))) { printResult(raw, out(`error: pathspec '${f || ""}' did not match any file(s) known to git`, "line-err"), "warn"); return false; }
-      if (g.modified.has(f)) { g.modified.delete(f); F().files.set(resolvePath(f), "CITY = \"Kyiv\"\nINTERVAL = 600\n"); return H(out("(незакомічені зміни в config.py скасовано — назавжди)", "line-warn"), "warn", "restore повертає файл до останнього коміту. Непідтверджені правки зникають без кошика."); }
+      const r = rel(f);
+      if (args[1] === "--staged") { if (g.staged.delete(r)) g.modified.add(r); return H(out(`(${r} прибрано зі staging; зміни в самому файлі лишилися)`, "line-muted")); }
+      if (g.modified.has(r)) { g.modified.delete(r); F().files.set(resolvePath(f), g.orig[r]); delete g.orig[r]; return H(out(`(незакомічені зміни в ${r} скасовано — назавжди)`, "line-warn"), "danger", "restore перезаписує файл версією з останнього коміту. Незакомічені правки зникають без кошика — Git їх ніде не зберігав. Безпечніше: спершу git diff, а потрібне — git stash або коміт."); }
       return H(out("(змін не було — нічого не змінилося)", "line-muted"));
     }
     case "add": g.modified.forEach(f => g.staged.add(f)); g.modified.clear(); return H(out("(зміни додано в staging)", "line-muted"));
     case "commit": {
       if (!g.staged.size) { printResult(raw, out("nothing to commit, working tree clean", "line-muted"), "warn", "Спершу зміни файл і git add ."); return false; }
-      g.staged.clear(); g.ahead++; g.commits.unshift("b3e8d21 Update config");
-      return H(out(["[main b3e8d21] Update config", " 1 file changed, 1 insertion(+), 1 deletion(-)"]));
+      const mi = args.indexOf("-m"), msg = mi >= 0 && args[mi + 1] ? args[mi + 1] : "Update";
+      const n = g.staged.size; g.staged.forEach(f => delete g.orig[f]); g.staged.clear(); g.ahead++; g.commits.unshift("b3e8d21 " + msg);
+      return H(out([`[main b3e8d21] ${msg}`, ` ${n} file${n > 1 ? "s" : ""} changed, ${n} insertion${n > 1 ? "s" : ""}(+), 1 deletion(-)`]));
     }
     case "push": {
       if (!g.ahead) return H(out("Everything up-to-date"), "ok");
-      g.ahead = 0; return H(out(["To github.com:stanislav/weather-station.git", "   9f1c2ab..b3e8d21  main -> main"]));
+      g.ahead = 0; return H(out(["To github.com:stas/" + baseOf(g.root) + ".git", "   9f1c2ab..b3e8d21  main -> main"]));
     }
     case "pull": return H(out("Already up to date."), "ok", hint || "На Pi як робочому вузлі: git pull → sudo systemctl restart my-service → journalctl -u my-service -f.");
     case "log": return H(out(g.commits));
   }
   printResult(raw, out(`(тренажер не знає «${raw}»)`, "line-muted"), "warn");
-  return false;
+  return unknownCmd();
 }
 
 function piPower(raw, sudo, name, args, hint) {

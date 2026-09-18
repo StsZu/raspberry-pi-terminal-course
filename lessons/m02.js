@@ -31,8 +31,8 @@ window.CLI_COURSE.modules.push({
           correct: 1, feedback: "`..` — рівно один рівень вище, тобто `/home/stanislav/projects`. Додому ведуть `cd ~` або `cd` без аргументу." },
         { type: "cli", title: "Створюємо проєкт",
           commands: [
-            { cmd: "mkdir -p ~/projects/led-test", explain: "Створює папку. <code>-p</code> створює й проміжні папки, якщо їх ще немає, і не свариться, якщо папка вже є.", risk: "low" },
-            { cmd: "touch main.py", explain: "Створює порожній файл (або оновлює час зміни наявного).", risk: "low" },
+            { cmd: "mkdir -p ~/projects/led-test", explain: "Створює папку. <code>-p</code> створює й проміжні папки, якщо їх ще немає, і не свариться, якщо папка вже є.", risk: "medium" },
+            { cmd: "touch main.py", explain: "Створює порожній файл (або оновлює час зміни наявного).", risk: "medium" },
             { cmd: "nano main.py", explain: "Текстовий редактор у терміналі. <span class=\"kbd\">Ctrl</span> + <span class=\"kbd\">O</span>, потім <span class=\"kbd\">Enter</span> — зберегти; <span class=\"kbd\">Ctrl</span> + <span class=\"kbd\">X</span> — вийти.", risk: "medium" }
           ] },
         { type: "terminal", title: "Спробуй: папка проєкту",
@@ -98,8 +98,8 @@ window.CLI_COURSE.modules.push({
           correct: 1, feedback: "`mv` і `cp` за замовчуванням мовчки перезаписують. Щоб питали — прапорець `-i`: `mv -i`." },
         { type: "cli", title: "Видалення: від слабкого до найсильнішого",
           commands: [
-            { cmd: "rm file.txt", explain: "Видаляє один файл. Без кошика.", risk: "medium" },
-            { cmd: "rmdir empty", explain: "Видаляє лише <strong>порожню</strong> папку — найбезпечніший спосіб прибрати папку.", risk: "low" },
+            { cmd: "rm file.txt", explain: "Видаляє один файл назавжди — кошика в терміналі немає, відновити не вийде. Спершу <code>ls</code>: чи це той файл?", risk: "high" },
+            { cmd: "rmdir empty", explain: "Видаляє лише <strong>порожню</strong> папку — найбезпечніший спосіб прибрати папку.", risk: "medium" },
             { cmd: "rm -r folder", explain: "Рекурсивно видаляє папку з усім вмістом.", risk: "high" },
             { cmd: "rm -rf folder", explain: "Те саме, але <code>-f</code> (force) прибирає всі запитання й попередження. Одна помилка в шляху — і зникне не те.", risk: "high" }
           ] },

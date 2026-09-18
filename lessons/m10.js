@@ -14,7 +14,7 @@ window.CLI_COURSE.modules.push({
         { type: "cli", title: "Отримати проєкт і роздивитися",
           intro: "<p>Команди виконуються на Pi. Якщо Git не встановлено — <code>sudo apt install git</code>.</p>",
           commands: [
-            { cmd: "git --version", explain: "Перевіряє, що Git встановлено, і показує версію (залежить від версії ОС).", output: "git version 2.39.5", risk: "low" },
+            { cmd: "git --version", explain: "Перевіряє, що Git встановлено, і показує версію (залежить від версії ОС).", output: "git version 2.47.3", risk: "low" },
             { cmd: "git clone https://github.com/stas/led-test.git", explain: "Копіює репозиторій у нову папку <code>led-test</code> у поточній папці. Для приватного репозиторію потрібен SSH-ключ або токен — токен ніколи не вписуй у команду чи файл проєкту.", output: "Cloning into 'led-test'...\nremote: Enumerating objects: 12, done.\nReceiving objects: 100% (12/12), done.", risk: "medium" },
             { cmd: "git status", explain: "Що змінено, що нове, що вже підготовлено до коміту. Нічого не змінює.", risk: "low" },
             { cmd: "git log --oneline", explain: "Коротка історія: один коміт — один рядок з хешем і підписом.", output: "3f9c2e1 Add blink delay\na1b2c3d Initial commit", risk: "low" }
@@ -137,9 +137,9 @@ window.CLI_COURSE.modules.push({
             "rsync -av led-test/ stanislav@10.0.0.50:~/projects/led-test/",
             "rsync -av ./led-test/ stanislav@10.0.0.50:/home/stanislav/projects/led-test/"
           ],
-          output: "sending incremental file list\n./\nmain.py\nconfig.json\n\nsent 1,204 bytes  received 57 bytes  2,522.00 bytes/sec\ntotal size is 1,020  speedup is 0.81",
+          output: "Transfer starting: 4 files\nmain.py\nconfig.json\n\nsent 1204 bytes  received 57 bytes  2522 bytes/sec\ntotal size is 1020  speedup is 0.81",
           hint: "Прапорці `a` і `v`; не забудь слеш у кінці джерела, щоб передати вміст, а не саму папку.",
-          explain: "Передано лише `main.py` і `config.json` — решта вже була на Pi. Повтори команду без змін — і список файлів буде порожній." },
+          explain: "Передано лише `main.py` і `config.json` — решта вже була на Pi. Повтори команду без змін — і список файлів буде порожній. Такий вивід дає `rsync` у macOS 15 і новіших (це openrsync); rsync з Homebrew і rsync на Pi пишуть `sending incremental file list`." },
         { type: "check", title: "Вибери інструмент",
           question: "Ти щодня правиш проєкт на Mac і хочеш швидко оновлювати копію на Pi, не зачіпаючи лог-файли, які створює сам Pi. Що обрати?",
           options: ["`rsync -av --delete` щоразу", "`rsync -av` без `--delete`", "`scp -r` усієї папки щоразу"],

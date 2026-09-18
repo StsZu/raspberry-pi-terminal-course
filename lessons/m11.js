@@ -22,9 +22,9 @@ window.CLI_COURSE.modules.push({
         { type: "callout", variant: "danger", title: "Що тут незворотне і як зробити безпечно",
           body: "<ul><li><code>rm -rf</code> не має кошика. Перед ним: <code>pwd</code>, <code>ls -la шлях</code>, прочитай команду вголос; або перейменуй папку в <code>old-test_old</code> і видали через тиждень.</li><li><code>chmod -R 777</code> відкриває все всім. Натомість: <code>chmod 644 файл</code> чи <code>chmod 755 скрипт</code> для конкретного файлу.</li><li><code>curl … | bash</code> виконує невідомий код. Натомість: завантаж у файл, прочитай у <code>less</code>, і лише потім запускай.</li></ul>" },
         { type: "check", title: "Прочитай команду",
-          question: "Ти бачиш у старій нотатці `sudo rm -rf / home/stanislav/tmp`. Що з нею не так?",
-          options: ["Нічого — `sudo` лише додає прав", "Вона видалить тільки папку `tmp`", "Пробіл після `/` робить першою ціллю корінь системи — це знищить Pi"],
-          correct: 2, feedback: "Пробіл розділяє аргументи: `rm` отримує `/` і `home/stanislav/tmp` окремо. Корінь `/` з `-rf` під `sudo` — це вся система." },
+          question: "Ти бачиш у старій нотатці `rm -rf ~/ projects/old-test`. Що з нею не так?",
+          options: ["Нічого — зайві пробіли `rm` ігнорує", "Вона видалить тільки папку `old-test`", "Пробіл після `~/` робить першою ціллю всю домашню папку — зникнуть усі проєкти й налаштування"],
+          correct: 2, feedback: "Пробіл розділяє аргументи: `rm` отримує `~/` (тобто `/home/stanislav`) і `projects/old-test` окремо. Від видалення кореня `/` GNU `rm` захищає `--preserve-root`, а від видалення домашньої папки — ніщо." },
         { type: "cli", title: "Безпечний шлях замість «| bash»",
           commands: [
             { cmd: "curl -fsSL https://example.com/install.sh -o install.sh", explain: "Лише завантажує скрипт у файл <code>install.sh</code>. Нічого не виконує.", risk: "medium" },

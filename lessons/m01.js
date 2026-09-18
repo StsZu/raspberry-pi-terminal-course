@@ -30,7 +30,7 @@ window.CLI_COURSE.modules.push({
           correct: 1, feedback: "IP відповідає — отже Pi увімкнена і в мережі. Не працює лише пошук імені (mDNS). Про SSH ping нічого не каже: він перевіряє лише мережу." },
         { type: "cli", title: "Увійти і вийти",
           commands: [
-            { cmd: "ssh stanislav@raspberrypi.local", explain: "Підключення до Pi користувачем <code>stanislav</code>. Першого разу SSH спитає про fingerprint ключа Pi — перевір, що підключаєшся до своєї Pi, і введи <code>yes</code>. Потім — пароль (під час введення символи не видно).", output: "stanislav@raspberrypi.local's password:\nLinux raspberrypi 6.6.51+rpt-rpi-2712 #1 SMP PREEMPT aarch64\nstas@raspberrypi:~ $", risk: "low" },
+            { cmd: "ssh stanislav@raspberrypi.local", explain: "Підключення до Pi користувачем <code>stanislav</code>. Першого разу SSH спитає про fingerprint ключа Pi — перевір, що підключаєшся до своєї Pi, і введи <code>yes</code>. Потім — пароль (під час введення символи не видно).", output: "stanislav@raspberrypi.local's password:\nLinux raspberrypi 6.18.34+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.18.34-1+rpt1 (2026-06-09) aarch64\nstanislav@raspberrypi:~ $", risk: "low" },
             { cmd: "ssh stanislav@10.0.0.50", explain: "Те саме за IP — надійніше, якщо <code>.local</code> не працює.", risk: "low" },
             { cmd: "exit", explain: "Закриває SSH-сесію. Ти повертаєшся в Terminal Mac — запрошення знову закінчується на <code>%</code>.", output: "logout\nConnection to raspberrypi.local closed.", risk: "low" }
           ] },
@@ -38,7 +38,7 @@ window.CLI_COURSE.modules.push({
           prompt: "Stas@MacBook-Pro ~ %",
           task: "Підключись з Mac до Pi користувачем `stanislav` за IP-адресою `10.0.0.50`.",
           expected: ["ssh stanislav@10.0.0.50"],
-          output: "stanislav@10.0.0.50's password:\nLinux raspberrypi 6.6.51+rpt-rpi-2712 #1 SMP PREEMPT aarch64\nLast login: Thu Sep 17 21:04:11 2026 from 10.0.0.42\nstas@raspberrypi:~ $",
+          output: "stanislav@10.0.0.50's password:\nLinux raspberrypi 6.18.34+rpt-rpi-2712 #1 SMP PREEMPT Debian 1:6.18.34-1+rpt1 (2026-06-09) aarch64\nLast login: Thu Sep 17 21:04:11 2026 from 10.0.0.42\nstanislav@raspberrypi:~ $",
           hint: "Формат: `ssh користувач@адреса`.",
           explain: "Запрошення змінилося на `stanislav@raspberrypi:~ $` — тепер кожна команда виконується на Pi, а не на Mac." },
         { type: "concept", title: "Де я зараз: Mac чи Pi?",

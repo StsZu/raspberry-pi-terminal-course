@@ -9,12 +9,12 @@ window.CLI_COURSE.modules.push({
         { type: "story", title: "pip відмовляється працювати",
           body: "<p>Ти пишеш скрипт, якому потрібна бібліотека <code>requests</code>. Вводиш звичне <code>pip3 install requests</code> — а замість установки бачиш червоне <code>error: externally-managed-environment</code>.</p><p>Це не поломка Pi, а захист. Розберемося, від чого він захищає і як правильно ставити бібліотеки.</p>" },
         { type: "concept", title: "Системний Python і venv",
-          body: "<p>На Raspberry Pi OS (на базі Debian 12 Bookworm або новішої — залежить від версії) системним Python користується сама ОС: частину її інструментів написано на Python, а бібліотеки для них ставить <code>apt</code>. Тому <code>pip</code> поза віртуальним середовищем заблоковано (стандарт PEP 668).</p><p><strong>venv</strong> — окрема папка проєкту (зазвичай <code>.venv</code>) з власним Python і власними бібліотеками. Що ставиш туди, не зачіпає систему.</p>",
+          body: "<p>На Raspberry Pi OS Trixie (Debian 13), як і в попередній Bookworm, системним Python користується сама ОС: частину її інструментів написано на Python, а бібліотеки для них ставить <code>apt</code>. Тому <code>pip</code> поза віртуальним середовищем заблоковано (стандарт PEP 668).</p><p><strong>venv</strong> — окрема папка проєкту (зазвичай <code>.venv</code>) з власним Python і власними бібліотеками. Що ставиш туди, не зачіпає систему.</p>",
           analogy: "Системний Python — як спільна кухня в гуртожитку: посуд там розставив комендант (`apt`), і якщо ти переставиш усе під себе, у сусідів зламається вечеря. `venv` — твоя власна валіза з посудом: бери в неї що завгодно, спільна кухня від цього не постраждає." },
         { type: "cli", title: "Версія Python і перша спроба pip",
           intro: "<p>Команди виконуються на Pi в папці проєкту <code>~/projects/python-test</code>.</p>",
           commands: [
-            { cmd: "python3 --version", explain: "Показує версію Python 3. Точний номер залежить від версії Raspberry Pi OS.", output: "Python 3.11.2", risk: "low" },
+            { cmd: "python3 --version", explain: "Показує версію Python 3. Точний номер залежить від версії Raspberry Pi OS.", output: "Python 3.13.5", risk: "low" },
             { cmd: "pip3 install requests", explain: "Поза venv на сучасній Raspberry Pi OS не встановить нічого — pip зупиниться з помилкою <code>externally-managed-environment</code> і підкаже шлях через venv.", output: "error: externally-managed-environment\n\n× This environment is externally managed\n╰─> To install Python packages system-wide, try apt install\n    python3-xyz, where xyz is the package you are trying to\n    install.\n    ...\n    If you wish to install a non-Debian-packaged Python package,\n    create a virtual environment using python3 -m venv path/to/venv.", risk: "medium" },
             { cmd: "python3 main.py", explain: "Запускає скрипт <code>main.py</code> з поточної папки. Завжди пиши <code>python3</code>, а не <code>python</code>.", output: "Hello from Raspberry Pi 5", risk: "low" }
           ] },
@@ -47,7 +47,7 @@ window.CLI_COURSE.modules.push({
         { type: "cli", title: "Два безпечні шляхи і один небезпечний",
           commands: [
             { cmd: "sudo apt install python3-requests", explain: "Ставить бібліотеку для всієї системи з репозиторію Raspberry Pi OS. Версія може бути старішою, але узгодженою з ОС.", risk: "medium" },
-            { cmd: "python3 -m venv --system-site-packages .venv", explain: "venv, який бачить і системні бібліотеки. Зручно для GPIO: <code>gpiozero</code> на Raspberry Pi OS уже встановлено системно.", risk: "low" },
+            { cmd: "python3 -m venv --system-site-packages .venv", explain: "venv, який бачить і системні бібліотеки. Зручно для GPIO: <code>gpiozero</code> на Raspberry Pi OS уже встановлено системно.", risk: "medium" },
             { cmd: "pip install --break-system-packages requests", explain: "Обходить захист і змінює системний Python. Ризик зламати програми ОС — не використовуй.", risk: "high" }
           ] },
         { type: "check", title: "Скрипт для GPIO у venv",

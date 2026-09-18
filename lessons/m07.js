@@ -37,7 +37,7 @@ window.CLI_COURSE.modules.push({
           intro: "<p>Ці команди <strong>змінюють</strong> стан контакту. Запускай лише зі зібраною й перевіреною схемою.</p>",
           commands: [
             { cmd: "pinctrl set 17 op dh", explain: "Робить GPIO17 виходом (<code>op</code>) з високим рівнем (<code>dh</code>, drive high). Зі схемою з резистором — світлодіод засвітиться.", risk: "high" },
-            { cmd: "gpioset -c gpiochip0 17=1", explain: "Те саме через libgpiod v2. У libgpiod v1 синтаксис інший: <code>gpioset gpiochip0 17=1</code> — залежить від версії libgpiod, а номер чипа — від версії ядра (перевір <code>gpiodetect</code>).", risk: "high" }
+            { cmd: "gpioset -c gpiochip0 17=1", explain: "Те саме через libgpiod v2 (у Trixie — пакет <code>gpiod</code> 2.2). У libgpiod v1 (Bookworm) синтаксис інший: <code>gpioset gpiochip0 17=1</code>. Номер чипа залежить від версії ядра — перевір <code>gpiodetect</code>.", risk: "high" }
           ] },
         { type: "callout", variant: "danger", title: "Неправильна схема — зіпсований Pi",
           body: "<p>Вихід з високим рівнем, закорочений на GND, або 5 В на контакті можуть назавжди пошкодити контакт чи всю плату — цього не скасуєш командою.</p><p><strong>Безпечно:</strong> спершу <code>pinout</code> і схема з резистором (для реле — модуль з окремим живленням), потім <code>pinctrl get</code>, і лише тоді — запис у контакт.</p>" },
@@ -46,7 +46,7 @@ window.CLI_COURSE.modules.push({
           expected: ["gpiodetect", "sudo gpiodetect"],
           output: "gpiochip0 [pinctrl-rp1] (54 lines)\ngpiochip10 [gpio-brcmstb@107d508500] (32 lines)\ngpiochip11 [gpio-brcmstb@107d508520] (4 lines)",
           hint: "Команда з пакета gpiod: слово gpio плюс англійське «виявити».",
-          explain: "Контакти гребінки — на чипі `pinctrl-rp1`. У старіших версіях ядра він мав інший номер, тому в командах `gpioset`/`gpioget` спершу перевіряй номер тут." },
+          explain: "Контакти гребінки — на чипі `pinctrl-rp1`. У Trixie (ядро 6.18) і на ядрах Bookworm від 6.6.45 це `gpiochip0`; на ранніх образах для Pi 5 — `gpiochip4`, а деякі проміжні ядра його перенумеровували. Тому в `gpioset`/`gpioget` спершу перевіряй номер тут." },
         { type: "check", title: "Реле на 5 В",
           question: "Хочеш керувати лампою через реле, а в котушки реле живлення 5 В. Як правильно?",
           options: ["Під'єднати котушку реле прямо до GPIO17", "Подати 5 В на GPIO17, щоб реле точно спрацювало", "Взяти модуль реле з транзистором/оптроном і окремим живленням, а з GPIO подавати лише керуючий сигнал 3,3 В"],
