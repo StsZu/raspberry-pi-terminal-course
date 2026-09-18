@@ -16,27 +16,14 @@ GitHub Pages: **https://stszu.github.io/raspberry-pi-terminal-course/**
 
 | Сторінка | Опис |
 |----------|------|
-| [index.html](index.html) | Інтерактивний тренажер (14 модулів, bash на Pi) |
-| [course.html](course.html) | 14 уроків у Markdown |
-| [cheatsheet.html](cheatsheet.html) | Шпаргалка команд |
-| [raspberry-pi-terminal-course/](raspberry-pi-terminal-course/) | Повний курс у Markdown |
+| [index.html](index.html) | Курс: 12 модулів, 17 уроків, quiz, фінальний іспит, словник, шпаргалка |
+| [trainer.html](trainer.html) | Інтерактивний тренажер (15 розділів; Mac → SSH → bash на Pi) |
+| [course.html](course.html), [cheatsheet.html](cheatsheet.html) | Редиректи на `index.html#/modules` і `index.html#/cheatsheet` |
+| [raspberry-pi-terminal-course/](raspberry-pi-terminal-course/) | Архів: 14 уроків у Markdown |
 
-## Модулі тренажера
+## Розділи тренажера
 
-1. SSH і перший вхід
-2. Terminal basics
-3. Файли та папки (nano, rm -rf)
-4. Пакети apt
-5. Мережева діагностика
-6. Стан системи (vcgencmd, RAM, диск)
-7. Python на Pi (venv)
-8. GPIO та залізо
-9. systemd services
-10. Логи та діагностика
-11. Git workflow
-12. Передача файлів Mac→Pi (scp, rsync)
-13. Небезпечні команди
-14. 14-денний план практики
+1. SSH і перший вхід · 2. Основи bash · 3. Файли та папки · 4. Пакети apt · 5. Мережа · 6. Стан системи · 7. Процеси · 8. Python і venv · 9. GPIO та залізо · 10. systemd-сервіси · 11. Логи · 12. Git на Pi · 13. Передача файлів Mac → Pi · 14. Небезпечні команди · 15. Щоденна перевірка
 
 ## Для кого
 
